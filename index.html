@@ -1,0 +1,2647 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>CalmSignal – AI Health & Stress Companion</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;600&family=Manrope:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Pre-compiled WESAD database bundle & Evidence Knowledge Base -->
+    <script src="wesad_bundle.js"></script>
+    <script src="evidence_base.js"></script>
+    <style>
+        :root {
+            --bg: #F3F6F5;
+            --card: #FFFFFF;
+            --ink: #172528;
+            --mut: #5F7477;
+            --line: #DFE6E4;
+            --acc: #27666A;
+            --acc-light: rgba(39, 102, 106, 0.08);
+            --acc-hover: #1F5255;
+            --g: #2E8B62;
+            --g-light: rgba(46, 139, 98, 0.12);
+            --a: #D49826;
+            --a-light: rgba(212, 152, 38, 0.12);
+            --o: #D45B28;
+            --o-light: rgba(212, 91, 40, 0.12);
+            --r: #BD3224;
+            --r-light: rgba(189, 50, 36, 0.12);
+            --rec: #3B8296;
+            --eda: #7D3C98;
+            --eda-light: rgba(125, 60, 152, 0.1);
+            --shadow-sm: 0 2px 6px rgba(23, 37, 40, 0.04);
+            --shadow-md: 0 8px 24px -4px rgba(23, 37, 40, 0.08);
+            box-sizing: border-box;
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px)
+        }
+
+        @media(prefers-color-scheme:dark) {
+            :root:not([data-theme="light"]) {
+                --bg: #0F1618;
+                --card: #172224;
+                --ink: #E7F0EE;
+                --mut: #859B9E;
+                --line: #223235;
+                --acc: #55B4B9;
+                --acc-light: rgba(85, 180, 185, 0.12);
+                --acc-hover: #6BC5CA;
+                --g: #3EAA79;
+                --g-light: rgba(62, 170, 121, 0.16);
+                --a: #E0A738;
+                --a-light: rgba(224, 167, 56, 0.16);
+                --o: #E26D3B;
+                --o-light: rgba(226, 109, 59, 0.16);
+                --r: #D64537;
+                --r-light: rgba(214, 69, 55, 0.16);
+                --rec: #4FA2B8;
+                --eda: #A569BD;
+                --eda-light: rgba(165, 105, 189, 0.15);
+                --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.3);
+                --shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.45)
+            }
+        }
+
+        :root[data-theme="dark"] {
+            --bg: #0F1618;
+            --card: #172224;
+            --ink: #E7F0EE;
+            --mut: #859B9E;
+            --line: #223235;
+            --acc: #55B4B9;
+            --acc-light: rgba(85, 180, 185, 0.12);
+            --acc-hover: #6BC5CA;
+            --g: #3EAA79;
+            --g-light: rgba(62, 170, 121, 0.16);
+            --a: #E0A738;
+            --a-light: rgba(224, 167, 56, 0.16);
+            --o: #E26D3B;
+            --o-light: rgba(226, 109, 59, 0.16);
+            --r: #D64537;
+            --r-light: rgba(214, 69, 55, 0.16);
+            --rec: #4FA2B8;
+            --eda: #A569BD;
+            --eda-light: rgba(165, 105, 189, 0.15);
+            --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.45)
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font: 14.5px/1.45 Manrope, system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased
+        }
+
+        #app {
+            max-width: 520px;
+            height: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: var(--bg);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.07)
+        }
+
+        #main {
+            flex: 1;
+            overflow-y: auto;
+            padding: 14px 16px 24px;
+            scroll-behavior: smooth
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow-sm);
+            transition: all .2s ease
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            margin: 0 0 6px;
+            font-weight: 600
+        }
+
+        h1 {
+            font: 500 27px/1.18 Fraunces, Georgia, serif;
+            letter-spacing: -0.3px
+        }
+
+        h2 {
+            font-size: 16.5px;
+            letter-spacing: -0.2px
+        }
+
+        h3 {
+            font-size: 14px
+        }
+
+        .sub {
+            color: var(--mut);
+            font-size: 13px;
+            line-height: 1.4
+        }
+
+        .big {
+            font: 500 50px/1 Fraunces, Georgia, serif;
+            letter-spacing: -1px
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            border: 0;
+            border-radius: 13px;
+            padding: 10px 16px;
+            background: var(--acc);
+            color: #fff;
+            font: 600 13.5px Manrope, sans-serif;
+            text-decoration: none;
+            cursor: pointer;
+            text-align: center;
+            transition: all .15s ease
+        }
+
+        .btn:hover {
+            filter: brightness(1.06);
+            transform: translateY(-1px)
+        }
+
+        .btn:active {
+            transform: translateY(0)
+        }
+
+        .btn.sec {
+            background: transparent;
+            color: var(--acc);
+            border: 1px solid var(--line)
+        }
+
+        .btn.sec:hover {
+            background: var(--acc-light);
+            border-color: var(--acc)
+        }
+
+        .btn.red {
+            background: var(--r);
+            color: #fff
+        }
+
+        .btn.sm {
+            padding: 6px 11px;
+            font-size: 12px;
+            border-radius: 10px
+        }
+
+        .btn.full {
+            display: flex;
+            width: 100%
+        }
+
+        .row {
+            display: flex;
+            gap: 8px;
+            align-items: center
+        }
+
+        .sp {
+            justify-content: space-between
+        }
+
+        .wrap {
+            flex-wrap: wrap
+        }
+
+        .g2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px
+        }
+
+        .g3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 11px;
+            border-radius: 99px;
+            border: 1px solid var(--line);
+            font-size: 12px;
+            background: var(--card);
+            color: var(--ink);
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            transition: all .15s ease
+        }
+
+        .chip:hover {
+            border-color: var(--acc)
+        }
+
+        .chip.on {
+            background: var(--acc);
+            color: #fff;
+            border-color: var(--acc)
+        }
+
+        .tag {
+            font-size: 10.5px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 99px;
+            background: var(--line);
+            color: var(--mut);
+            letter-spacing: 0.2px;
+            text-transform: uppercase
+        }
+
+        .tag.gold {
+            background: rgba(212, 152, 38, 0.15);
+            color: var(--a)
+        }
+
+        .tag.red {
+            background: var(--r-light);
+            color: var(--r)
+        }
+
+        .tag.green {
+            background: var(--g-light);
+            color: var(--g)
+        }
+
+        .m {
+            font: 700 23px/1.1 Manrope;
+            letter-spacing: -0.5px
+        }
+
+        .u {
+            font-size: 11.5px;
+            color: var(--mut);
+            font-weight: 500
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: var(--bg);
+            color: var(--ink);
+            font: inherit;
+            transition: border-color .15s
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--acc);
+            box-shadow: 0 0 0 2px var(--acc-light)
+        }
+
+        label {
+            display: block;
+            font-size: 12.5px;
+            font-weight: 600;
+            margin: 10px 0 3px
+        }
+
+        .err {
+            color: var(--r);
+            font-size: 11.5px;
+            min-height: 16px;
+            margin-top: 2px
+        }
+
+        nav {
+            display: flex;
+            border-top: 1px solid var(--line);
+            background: var(--card);
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.03)
+        }
+
+        nav button {
+            flex: 1;
+            padding: 11px 0 9px;
+            border: 0;
+            background: none;
+            color: var(--mut);
+            font: 600 12px Manrope;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            transition: color .15s ease
+        }
+
+        nav button.on {
+            color: var(--acc);
+            box-shadow: inset 0 3px var(--acc);
+            font-weight: 700
+        }
+
+        #ov {
+            position: absolute;
+            inset: 0;
+            background: var(--bg);
+            overflow-y: auto;
+            padding: 14px 16px 28px;
+            z-index: 100
+        }
+
+        #ov:empty {
+            display: none
+        }
+
+        .hd {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px
+        }
+
+        canvas {
+            width: 100%;
+            height: 85px;
+            display: block;
+            background: var(--bg);
+            border-radius: 12px
+        }
+
+        .circle {
+            width: 175px;
+            height: 175px;
+            border-radius: 50%;
+            margin: 24px auto;
+            background: radial-gradient(circle, var(--acc), rgba(39, 102, 106, 0.35));
+            transform: scale(.55)
+        }
+
+        .tl {
+            border-left: 2px solid var(--line);
+            padding-left: 12px;
+            margin-left: 4px
+        }
+
+        .tl div {
+            margin-bottom: 8px
+        }
+
+        .bar {
+            height: 7px;
+            border-radius: 9px;
+            background: var(--line);
+            overflow: hidden
+        }
+
+        .bar i {
+            display: block;
+            height: 100%;
+            background: var(--acc);
+            transition: width .4s ease
+        }
+
+        .msg {
+            padding: 10px 14px;
+            border-radius: 16px;
+            margin: 6px 0;
+            max-width: 88%;
+            font-size: 13.5px;
+            line-height: 1.45
+        }
+
+        .msg.bot {
+            background: var(--card);
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow-sm)
+        }
+
+        .msg.me {
+            background: var(--acc);
+            color: #fff;
+            margin-left: auto
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            background: var(--g);
+            box-shadow: 0 0 0 rgba(46, 139, 98, 0.4);
+            animation: pulse 1.8s infinite
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(46, 139, 98, 0.7)
+            }
+
+            70% {
+                box-shadow: 0 0 0 7px rgba(46, 139, 98, 0)
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(46, 139, 98, 0)
+            }
+        }
+
+        .pulse-dot.orange {
+            background: var(--o);
+            animation: pulse-o 1.8s infinite
+        }
+
+        @keyframes pulse-o {
+            0% {
+                box-shadow: 0 0 0 0 rgba(212, 91, 40, 0.7)
+            }
+
+            70% {
+                box-shadow: 0 0 0 7px rgba(212, 91, 40, 0)
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(212, 91, 40, 0)
+            }
+        }
+
+        .wesad-badge {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            padding: 2px 6px;
+            border-radius: 6px;
+            background: var(--acc-light);
+            color: var(--acc);
+            text-transform: uppercase
+        }
+
+        .evidence-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: rgba(39, 102, 106, 0.1);
+            color: var(--acc);
+            cursor: pointer;
+            margin-top: 6px;
+            transition: background .15s
+        }
+
+        .evidence-pill:hover {
+            background: rgba(39, 102, 106, 0.2)
+        }
+
+        .meter-bar {
+            position: relative;
+            height: 6px;
+            border-radius: 4px;
+            background: linear-gradient(to right, var(--g) 0%, var(--a) 45%, var(--o) 80%, var(--r) 100%);
+            margin: 6px 0
+        }
+
+        .meter-pin {
+            position: absolute;
+            top: -4px;
+            width: 3px;
+            height: 14px;
+            background: var(--ink);
+            border-radius: 2px;
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+            transition: left .3s ease
+        }
+
+        .demo-banner {
+            background: var(--a-light);
+            border: 1px solid var(--a);
+            color: var(--ink);
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 11.5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px
+        }
+
+        .password-box {
+            position: relative
+        }
+
+        .password-box input {
+            padding-right: 40px
+        }
+
+        .pwd-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--mut);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600
+        }
+
+        .auth-nav {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 10px
+        }
+
+        .auth-nav button {
+            background: none;
+            border: none;
+            font: 600 13px Manrope;
+            color: var(--mut);
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: all .15s
+        }
+
+        .auth-nav button.active {
+            background: var(--acc-light);
+            color: var(--acc)
+        }
+
+        @media(prefers-reduced-motion:reduce) {
+            * {
+                transition: none !important;
+                animation: none !important
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div id="main"></div>
+        <div id="ov"></div>
+    </div>
+    <script>
+        /* ==========================================================================
+           WESAD DATABASE & EVIDENCE INITIALIZATION
+           ========================================================================== */
+        let WESAD = window.WESAD_DATA || null;
+        if (!WESAD) {
+            fetch('wesad_data.json').then(r => r.json()).then(d => { WESAD = window.WESAD_DATA = d; }).catch(() => { });
+        }
+        const EVIDENCE = window.EVIDENCE_KNOWLEDGE_BASE || [];
+
+        // Fallback WESAD Population Norms (from all 15 subjects)
+        const WESAD_POP_DEFAULTS = {
+            LOW: { hr: { mean: 79.7, std: 10.1 }, rmssd: { mean: 65.0, std: 29.4 }, eda: { mean: 2.66, std: 2.99 }, temp: { mean: 32.30, std: 1.76 } },
+            HIGH: { hr: { mean: 70.6, std: 7.0 }, rmssd: { mean: 77.1, std: 32.5 }, eda: { mean: 1.17, std: 1.55 }, temp: { mean: 33.33, std: 1.52 } },
+            ELEVATED: { hr: { mean: 76.5, std: 14.2 }, rmssd: { mean: 69.8, std: 31.5 }, eda: { mean: 1.38, std: 1.60 }, temp: { mean: 32.69, std: 1.58 } },
+            RECOVERING: { hr: { mean: 81.2, std: 16.6 }, rmssd: { mean: 73.6, std: 37.6 }, eda: { mean: 2.10, std: 2.77 }, temp: { mean: 32.46, std: 1.28 } }
+        };
+        const getPopNorm = (st, k) => (WESAD?.population_norms?.[st]?.[k]?.mean) ?? (WESAD_POP_DEFAULTS[st]?.[k]?.mean);
+
+        /* ===== CONFIG & VERIFIED CRISIS HELPLINES ===== */
+        const HELP = [
+            { n: 'Tele-MANAS (Mental Health Support)', num: '14416', d: 'Toll-free 24/7 National Mental Health Programme (India)' },
+            { n: 'Emergency Services', num: '112', d: 'Police, Fire, Ambulance' },
+            { n: 'Vandrevala Foundation', num: '+919999666555', d: '24/7 Free, Confidential Crisis Counseling' },
+            { n: 'iCall Psychosocial Helpline', num: '9152987821', d: 'TISS Professional Counseling Services' },
+            { n: '988 Suicide & Crisis Lifeline', num: '988', d: 'Free & Confidential (US & Canada)' }
+        ];
+
+        const TRIG = ['Studies/Exams', 'Friends/Relationships', 'Family', 'Work/Responsibilities', 'Sleep/Fatigue', 'Overthinking', 'Social Media', 'Travel/Environment', 'Physical Discomfort', 'Something Else'];
+        const CTXS = ['Resting', 'Studying', 'Walking', 'Exercising', 'Working', 'Travelling', 'Sleeping', 'Socializing', 'Other'];
+        const STN = { LOW: 'CALM BASELINE', ELEVATED: 'ELEVATED AROUSAL', HIGH: 'ACUTE STRESS (TSST)', RECOVERING: 'MEDITATION / RECOVERY' };
+        const STC = { LOW: 'var(--g)', ELEVATED: 'var(--a)', HIGH: 'var(--o)', RECOVERING: 'var(--rec)' };
+
+        /* ==========================================================================
+           AUTHENTICATION, SESSIONS & USER ISOLATION
+           ========================================================================== */
+        const AUTH_KEY = 'calmsignal_auth_session';
+        let AUTH = {
+            user: null,       // { id, name, email, age, weight, height }
+            token: null,      // session token
+            isDemo: false
+        };
+
+        // Restore saved session from localStorage
+        try {
+            const savedAuth = JSON.parse(localStorage.getItem(AUTH_KEY));
+            if (savedAuth && (savedAuth.user || savedAuth.isDemo)) {
+                AUTH = savedAuth;
+            }
+        } catch (e) { }
+
+        // SHA-256 password hashing helper for authentic client-side fallback
+        async function sha256(str) {
+            try {
+                const buf = new TextEncoder().encode(str);
+                const hash = await crypto.subtle.digest('SHA-256', buf);
+                return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+            } catch (e) {
+                let hash = 0;
+                for (let i = 0; i < str.length; i++) hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                return Math.abs(hash).toString(16);
+            }
+        }
+
+        // User-specific storage key to guarantee complete multi-user data isolation
+        function getUserStorageKey() {
+            if (AUTH.isDemo) return 'calmsignal_store_demo';
+            if (AUTH.user && AUTH.user.id) return `calmsignal_store_${AUTH.user.id}`;
+            return 'calmsignal_store_guest';
+        }
+
+        const DEF_STORE = () => ({
+            profile: null,
+            contacts: [],       // { id, name, rel, ph, email, cat ('emergency'|'personal'), pri: 0|1, notes }
+            journal: [],        // { id, t, trig, text, hr, sc }
+            sessions: [],
+            events: [],
+            base: {
+                days: 0,
+                n: { hr: 0, hrv: 0, eda: 0, st: 0, sp: 0 },
+                m: { hr: 78.5, hrv: 62.0, eda: 1.85, st: 33.0, sp: 98 },
+                v: { hr: 25.0, hrv: 120.0, eda: 0.8, st: 0.3, sp: 0.5 }
+            },
+            chatHistory: [],    // { r: 'bot'|'me', t, time, evRef }
+            chatPrefs: { prefersNoBreathing: false, rejectedTopics: [] },
+            set: { auto: false, haptic: true, sp: true, jp: true, ai: true, jmem: true, chatMemory: true },
+            ctx: 'Resting'
+        });
+
+        let S = DEF_STORE();
+
+        function loadActiveStore() {
+            const k = getUserStorageKey();
+            try {
+                const raw = localStorage.getItem(k);
+                if (raw) S = JSON.parse(raw);
+                else S = DEF_STORE();
+            } catch (e) {
+                S = DEF_STORE();
+            }
+            // Ensure profile matches authenticated user
+            if (AUTH.user) {
+                S.profile = S.profile || {};
+                S.profile.name = AUTH.user.name;
+                S.profile.email = AUTH.user.email;
+                S.profile.age = AUTH.user.age;
+                S.profile.wt = AUTH.user.weight;
+                S.profile.ht = AUTH.user.height;
+            }
+        }
+
+        const save = () => {
+            try {
+                const k = getUserStorageKey();
+                localStorage.setItem(k, JSON.stringify(S));
+                // Asynchronously sync to backend server if logged in
+                if (AUTH.token && !AUTH.isDemo) {
+                    fetch('/api/user/sync', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AUTH.token}` },
+                        body: JSON.stringify({
+                            contacts: S.contacts, journal: S.journal, events: S.events,
+                            sessions: S.sessions, base: S.base, chat_history: S.chatHistory, set: S.set
+                        })
+                    }).catch(() => { });
+                }
+            } catch (e) { }
+        };
+
+        loadActiveStore();
+
+        const uid = () => Math.random().toString(36).slice(2, 9);
+        const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+        const $ = s => document.querySelector(s);
+        const fmt = t => new Date(t).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+        const fday = t => new Date(t).toLocaleDateString([], { day: 'numeric', month: 'short' });
+        const openEv = () => E.ev;
+        const lastEv = () => (S.events && S.events.length > 0 ? S.events[S.events.length - 1] : null);
+
+        /* ===== PHYSIOLOGICAL BASELINE ===== */
+        const FLOOR = { hr: 3, hrv: 6, eda: 0.1, st: 0.25, sp: 0.5 };
+        const REF = { hr: 78.5, hrv: 62.0, eda: 1.85, st: 33.0, sp: 98 };
+
+        const upd = (k, x) => {
+            if (x == null || isNaN(x)) return;
+            const b = S.base;
+            if (!b.n[k]) { b.n[k] = 0; b.m[k] = REF[k] || x; b.v[k] = 0; }
+            const n = ++b.n[k];
+            const d = x - b.m[k];
+            b.m[k] += d / n;
+            b.v[k] += d * (x - b.m[k]);
+        };
+
+        const sd = k => (S.base.n?.[k] > 1) ? Math.sqrt(S.base.v[k] / (S.base.n[k] - 1)) : (FLOOR[k] * 2);
+        const active = () => S.base.days >= 7 && (S.base.n?.hr || 0) >= 300;
+        const bm = k => (active() && S.base.n?.[k] > 30) ? S.base.m[k] : (REF[k] || 72);
+        const rng = k => {
+            const m = bm(k), s = Math.max(sd(k), FLOOR[k] || 1) * 1.25;
+            return [Math.max(0, m - s), m + s];
+        };
+        const rtxt = (k, d = 0) => (S.base.n?.[k] > 20 || active()) ? rng(k).map(x => x.toFixed(d)).join('–') : 'learning';
+
+        /* ==========================================================================
+           MULTI-SOURCE SENSOR INGESTION (Hardware + WESAD Empirical Replay)
+           ========================================================================== */
+        const P = {
+            mode: 'wesad',
+            srcLabel: 'WESAD Replay (S5 Acute Stress)',
+            connected: true,
+            packetsCount: 0,
+            lastPacketTime: Date.now(),
+            dropSp: false,
+            c: { hr: 74, hrv: 58, eda: 1.95, st: 33.2, sp: 98, act: 'Resting', mv: 'Low', amb: 26.8, hum: 55 },
+            wesadSubj: 'S5',
+            wesadScn: 'high',
+            wesadIdx: 0,
+
+            ingest(pkt, srcLabel) {
+                if (!pkt) return;
+                this.lastPacketTime = Date.now();
+                this.packetsCount++;
+                if (srcLabel) this.srcLabel = srcLabel;
+                this.connected = true;
+                if (pkt.hr != null) this.c.hr = +pkt.hr;
+                if (pkt.hrv != null) this.c.hrv = +pkt.hrv;
+                if (pkt.eda != null) this.c.eda = +pkt.eda;
+                if (pkt.st != null) this.c.st = +pkt.st;
+                if (pkt.sp != null) this.c.sp = +pkt.sp;
+                if (pkt.act != null) this.c.act = pkt.act;
+                if (pkt.mv != null) this.c.mv = pkt.mv;
+                if (pkt.amb != null) this.c.amb = +pkt.amb;
+                if (pkt.hum != null) this.c.hum = +pkt.hum;
+                if (typeof live === 'function') live();
+            },
+
+            async connectBLE() {
+                if (!navigator.bluetooth) {
+                    alert("Web Bluetooth requires Google Chrome, Microsoft Edge, or a WebBLE-enabled browser.");
+                    return false;
+                }
+                try {
+                    this.srcLabel = "Searching BLE devices...";
+                    const device = await navigator.bluetooth.requestDevice({
+                        acceptAllDevices: false,
+                        filters: [{ services: ['heart_rate'] }, { namePrefix: 'HealthBand' }, { namePrefix: 'ESP32' }],
+                        optionalServices: ['heart_rate', 'environmental_sensing', '6e400001-b5a3-f393-e0a9-e50e24dcca9e']
+                    });
+                    const server = await device.gatt.connect();
+                    this.mode = 'ble';
+                    this.srcLabel = `BLE: ${device.name || 'Wearable'}`;
+                    this.connected = true;
+                    try {
+                        const hrSvc = await server.getPrimaryService('heart_rate');
+                        const hrChar = await hrSvc.getCharacteristic('heart_rate_measurement');
+                        await hrChar.startNotifications();
+                        hrChar.addEventListener('characteristicvaluechanged', (e) => {
+                            const val = e.target.value;
+                            const flags = val.getUint8(0);
+                            const hr = (flags & 1) ? val.getUint16(1, true) : val.getUint8(1);
+                            let hrv = P.c.hrv;
+                            if (val.byteLength >= (flags & 1 ? 4 : 3) + 2) {
+                                const rr = val.getUint16(val.byteLength - 2, true) * (1000 / 1024);
+                                hrv = Math.round(rr * 0.08 + P.c.hrv * 0.92);
+                            }
+                            P.ingest({ hr, hrv, eda: P.c.eda, st: P.c.st, sp: 98 }, `BLE: ${device.name}`);
+                        });
+                    } catch (e) { }
+                    render();
+                    return true;
+                } catch (err) {
+                    alert("Bluetooth connection cancelled: " + err.message);
+                    return false;
+                }
+            },
+
+            async connectSerial() {
+                if (!navigator.serial) {
+                    alert("Web Serial requires Google Chrome or Microsoft Edge.");
+                    return false;
+                }
+                try {
+                    const port = await navigator.serial.requestPort();
+                    await port.open({ baudRate: 115200 });
+                    this.mode = 'serial';
+                    this.srcLabel = 'USB Serial ESP32 (115200)';
+                    this.connected = true;
+                    const textDecoder = new TextDecoderStream();
+                    port.readable.pipeTo(textDecoder.writable);
+                    const reader = textDecoder.readable.getReader();
+                    let buf = '';
+                    (async () => {
+                        while (true) {
+                            const { value, done } = await reader.read();
+                            if (done) break;
+                            buf += value;
+                            const lines = buf.split('\n');
+                            buf = lines.pop();
+                            for (const line of lines) {
+                                const trimmed = line.trim();
+                                if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+                                    try { P.ingest(JSON.parse(trimmed), 'USB Serial ESP32'); } catch (e) { }
+                                }
+                            }
+                        }
+                    })();
+                    render();
+                    return true;
+                } catch (err) {
+                    alert("Serial connection error: " + err.message);
+                    return false;
+                }
+            },
+
+            connectSSE(url = '/api/sensor-stream') {
+                this.mode = 'sse';
+                this.srcLabel = 'WiFi Network Stream';
+                try {
+                    const sse = new EventSource(url);
+                    sse.onmessage = (e) => {
+                        try { P.ingest(JSON.parse(e.data), 'WiFi Sensor Stream'); } catch (err) { }
+                    };
+                    sse.onopen = () => { P.connected = true; P.srcLabel = 'WiFi Server Active (8000)'; render(); };
+                    render();
+                } catch (e) { }
+            },
+
+            setWESADReplay(subj = 'S5', scenario = 'high') {
+                this.mode = 'wesad';
+                this.wesadSubj = subj;
+                this.wesadScn = scenario;
+                this.wesadIdx = 0;
+                const stream = WESAD?.replay_streams?.[subj]?.scenarios?.[scenario];
+                const scnName = stream?.title || scenario.toUpperCase();
+                this.srcLabel = `WESAD ${subj} (${scnName})`;
+                this.connected = true;
+                render();
+            },
+
+            tick() {
+                if (this.mode === 'wesad') {
+                    const stream = WESAD?.replay_streams?.[this.wesadSubj]?.scenarios?.[this.wesadScn]?.points;
+                    if (stream && stream.length > 0) {
+                        const pt = stream[this.wesadIdx % stream.length];
+                        this.wesadIdx++;
+                        const j_hr = (Math.random() - 0.5) * 1.0;
+                        const j_eda = (Math.random() - 0.5) * 0.03;
+                        this.c.hr = Math.max(45, Math.round(pt.hr + j_hr));
+                        this.c.hrv = Math.max(15, Math.round(pt.hrv + (Math.random() - 0.5) * 1.5));
+                        this.c.eda = Math.max(0.05, +(pt.eda + j_eda).toFixed(3));
+                        this.c.st = +(pt.st + (Math.random() - 0.5) * 0.03).toFixed(2);
+                        this.c.sp = this.dropSp ? null : pt.sp;
+                        this.c.act = pt.act;
+                        this.c.mv = pt.mv;
+                        this.c.amb = 26.8;
+                        this.c.hum = 55;
+                    }
+                } else if (this.mode === 'sim') {
+                    const nz = { hr: 1.2, hrv: 1.8, eda: 0.02, st: 0.02 };
+                    for (const k in nz) this.c[k] += (Math.random() - 0.5) * nz[k];
+                    this.c.hr = Math.round(this.c.hr);
+                    this.c.hrv = Math.round(this.c.hrv);
+                    this.c.eda = +Math.max(0.1, this.c.eda).toFixed(3);
+                    this.c.st = +this.c.st.toFixed(2);
+                }
+                return this.read();
+            },
+
+            read() {
+                const c = this.c;
+                return {
+                    hr: Math.round(c.hr),
+                    hrv: Math.round(c.hrv),
+                    eda: +c.eda.toFixed(3),
+                    st: +c.st.toFixed(2),
+                    sp: this.dropSp ? null : Math.round(Math.min(100, Math.max(70, c.sp))),
+                    act: c.act || 'Resting',
+                    mv: c.mv || 'Low',
+                    amb: +c.amb.toFixed(1),
+                    hum: Math.round(c.hum)
+                };
+            },
+
+            status() {
+                return [
+                    ['Data Source', this.srcLabel],
+                    ['Hardware Link', this.mode === 'ble' ? 'Bluetooth LE' : this.mode === 'serial' ? 'USB COM Serial' : this.mode === 'sse' ? 'WiFi Stream' : 'WESAD Database Replay'],
+                    ['EDA / GSR Sensor', this.c.eda ? `${this.c.eda} μS (Active)` : 'Standby'],
+                    ['Pulse / SpO₂', this.dropSp ? 'Signal lost' : `${this.c.sp}% (Active)`],
+                    ['Skin Temperature', `${this.c.st}°C (Active)`],
+                    ['Packets Ingested', `${this.packetsCount} pkts`]
+                ];
+            }
+        };
+
+        /* ==========================================================================
+           WESAD MULTI-MODAL MACHINE LEARNING ENGINE
+           ========================================================================== */
+        const cl = x => Math.max(0, Math.min(1, x));
+
+        const E = {
+            sc: 0,
+            probStress: 0,
+            state: 'LOW',
+            stage: 'NORMAL',
+            r: P.read(),
+            ring: [],
+            hist: [],
+            ev: null,
+            calm: 0,
+            wesadMatch: { subject: 'S5', condition: 'TSST', similarity: 92 },
+
+            step(r) {
+                this.r = r;
+                const prev = this.state;
+                const isEx = ['Exercising', 'Walking'].includes(S.ctx) || r.mv !== 'Low';
+
+                const b_hr = bm('hr');
+                const b_hrv = bm('hrv');
+                const b_eda = bm('eda');
+                const b_temp = bm('st');
+
+                const d_hr = r.hr - b_hr;
+                const r_hr = r.hr / Math.max(30, b_hr);
+                const d_rmssd = r.hrv - b_hrv;
+                const r_rmssd = r.hrv / Math.max(10, b_hrv);
+                const d_eda = r.eda - b_eda;
+                const r_eda = r.eda / Math.max(0.1, b_eda);
+                const d_temp = r.st - b_temp;
+
+                // Evaluate WESAD Logistic Regression Model
+                const model = WESAD?.model;
+                let prob = 0.2;
+                if (model && model.scaler_mean && model.lr_coefficients) {
+                    const featVals = [d_hr, r_hr, d_rmssd, r_rmssd, d_eda, r_eda, d_temp, r.hr, r.hrv, r.eda, r.st];
+                    let z = model.lr_intercept || -1.138;
+                    for (let i = 0; i < featVals.length; i++) {
+                        const val = featVals[i];
+                        const mean = model.scaler_mean[i] ?? 0;
+                        const scale = model.scaler_scale[i] ?? 1;
+                        const coef = model.lr_coefficients[i] ?? 0;
+                        z += coef * ((val - mean) / Math.max(1e-5, scale));
+                    }
+                    prob = 1.0 / (1.0 + Math.exp(-Math.max(-10, Math.min(10, z))));
+                } else {
+                    const hrDev = cl((d_hr + 5) / 25);
+                    const hrvDev = cl((15 - d_rmssd) / 30);
+                    const edaDev = cl((d_eda + 0.5) / 3.0);
+                    prob = 0.45 * hrDev + 0.35 * edaDev + 0.20 * hrvDev;
+                }
+
+                if (isEx) prob *= 0.25; // Suppress false-alarm psychological stress during workouts
+                this.probStress = +prob.toFixed(3);
+
+                const rawScore = prob * 100;
+                this.sc = this.sc * 0.72 + rawScore * 0.28;
+                const s = this.sc;
+
+                let L = 'LOW';
+                if (s >= 58 || (prev === 'HIGH' && s >= 46)) {
+                    L = 'HIGH';
+                } else if (s >= 32 || (prev === 'ELEVATED' && s >= 26)) {
+                    L = (d_rmssd > 2 && d_hr < 0) ? 'RECOVERING' : 'ELEVATED';
+                } else if (['HIGH', 'ELEVATED', 'RECOVERING'].includes(prev) && s >= 18) {
+                    L = 'RECOVERING';
+                } else {
+                    L = 'LOW';
+                }
+
+                this.hist.push(s);
+                if (this.hist.length > 600) this.hist.shift();
+                const d = s - (this.hist[this.hist.length - 16] ?? s);
+                this.stage = L === 'HIGH' ? 'HIGH' : L === 'RECOVERING' ? 'RECOVERING' : L === 'ELEVATED' ? (d >= 4 ? 'RISING' : 'EARLY SIGNS') : (active() && s >= 20 && d >= 5 ? 'EARLY SIGNS' : 'NORMAL');
+
+                const row = { t: Date.now(), hr: r.hr, hrv: r.hrv, eda: r.eda, sc: Math.round(s), st: r.st, sp: r.sp, act: r.act };
+                this.ring.push(row);
+                if (this.ring.length > 300) this.ring.shift();
+                this.state = L;
+
+                this.computeWESADMatch(r);
+
+                if (L !== prev) {
+                    const lab = {
+                        ELEVATED: 'Signals moving away from baseline pattern',
+                        HIGH: 'Acute stress response pattern (WESAD TSST)',
+                        RECOVERING: 'Autonomic recovery trajectory',
+                        LOW: 'Within personal baseline bounds'
+                    }[L];
+
+                    if (!this.ev && (L === 'ELEVATED' || L === 'HIGH')) {
+                        this.ev = {
+                            id: uid(), start: row.t, end: null, peak: L, peakSc: row.sc, ctx: S.ctx, personal: active(),
+                            b: { hr: b_hr, hrv: b_hrv, eda: b_eda, st: b_temp },
+                            rec: this.ring.slice(-30), marks: []
+                        };
+                        S.events.push(this.ev);
+                    }
+                    if (this.ev) this.ev.marks.push({ t: row.t, label: lab });
+                    if (L === 'HIGH' && S.set.auto && !SUP.run) SUP.open('breath');
+                }
+
+                const ev = this.ev;
+                if (ev) {
+                    if (ev.rec[ev.rec.length - 1] !== row) ev.rec.push(row);
+                    if (row.sc >= ev.peakSc) { ev.peakSc = row.sc; ev.peakRow = row; }
+                    if (L === 'HIGH') ev.peak = 'HIGH';
+                    if (L === 'LOW') {
+                        if (++this.calm >= 18) {
+                            ev.end = row.t; ev.after = row; this.ev = null; this.calm = 0; save();
+                        }
+                    } else {
+                        this.calm = 0;
+                    }
+                }
+            },
+
+            computeWESADMatch(r) {
+                const stats = WESAD?.subject_condition_stats;
+                if (!stats) return;
+                let bestSubj = 'S5', bestCond = 'TSST', bestScore = 9999;
+                for (const subj in stats) {
+                    for (const cond in stats[subj]) {
+                        const cs = stats[subj][cond];
+                        if (!cs || !cs.hr || !cs.eda) continue;
+                        const hrDiff = Math.abs(r.hr - cs.hr.mean) / 12.0;
+                        const edaDiff = Math.abs(r.eda - cs.eda.mean) / 2.0;
+                        const tempDiff = Math.abs(r.st - cs.temp.mean) / 1.5;
+                        const dist = hrDiff * 0.45 + edaDiff * 0.40 + tempDiff * 0.15;
+                        if (dist < bestScore) {
+                            bestScore = dist;
+                            bestSubj = subj;
+                            bestCond = cond;
+                        }
+                    }
+                }
+                const simPct = Math.max(65, Math.min(98, Math.round(100 - bestScore * 18)));
+                this.wesadMatch = { subject: bestSubj, condition: bestCond, similarity: simPct };
+            }
+        };
+
+        /* ==========================================================================
+           EVIDENCE-BASED PSYCHOLOGICAL COMPANION (AI CHATBOT ENGINE)
+           ========================================================================== */
+        function generateEvidenceResponse(userMessage) {
+            const msg = userMessage.trim().toLowerCase();
+            const r = E.r;
+            const prefs = S.chatPrefs || {};
+
+            // 1. URGENT CRISIS & SAFETY DETECTION
+            if (/(hurt myself|suicid|kill myself|end my life|want to die|no reason to live|can't go on|cant go on|better off dead)/i.test(msg)) {
+                const primaryContact = S.contacts.find(c => c.pri && c.ph);
+                let contactPrompt = "";
+                if (primaryContact) {
+                    contactPrompt = `\n\nI also see you have **${esc(primaryContact.name)}** (${esc(primaryContact.rel)}) listed as your trusted contact. Would you like to call them directly right now?`;
+                }
+                return {
+                    t: `I'm so sorry you're feeling this level of pain and despair. Please know that your life has immense worth, and you do not have to carry this alone. I am an AI companion and cannot provide emergency medical care, but compassionate, confidential human support is available to you right this second.${contactPrompt}`,
+                    isCrisis: true,
+                    evidenceRef: null
+                };
+            }
+
+            // 2. USER FEEDBACK / ADAPTATION (e.g. "I hate breathing exercises", "breathing doesn't work")
+            if (/(hate breathing|stop breathing|breathing doesn't help|breathing does not help|can't breathe|no breathing|don't want to breathe)/i.test(msg)) {
+                prefs.prefersNoBreathing = true;
+                save();
+                return {
+                    t: `I hear you completely, and thank you for telling me. Paced breathing can actually feel restrictive or even increase discomfort for some people during anxiety. We will not use breathing exercises.\n\nInstead, would you like to try physical grounding (like feeling your feet firmly against the floor or feeling the texture of an object near you), or would you just prefer to vent and talk through what's on your mind?`,
+                    evidenceRef: "who-mhgap-stress"
+                };
+            }
+
+            // Retrieve matching clinical guidelines from evidence base
+            const evidenceMatches = (typeof retrieveEvidence === 'function') ? retrieveEvidence(msg, { state: E.state }) : [];
+            const primaryEvidence = evidenceMatches[0] || null;
+
+            // 3. ACUTE ANXIETY & PANIC ATTACK DISCLOSURE
+            if (/(anxiety attack|panic attack|panicking|freaking out|terrified|losing my mind|heart is beating so fast|having a panic)/i.test(msg)) {
+                let technique = "";
+                if (prefs.prefersNoBreathing) {
+                    technique = "Let's do a gentle sensory check right here with me. Can you feel the solid surface supporting your weight right now? Name one sound you can hear in your room.";
+                } else {
+                    technique = "Let's drop an anchor right now. Can you feel your feet resting on the floor? If you feel comfortable, let out a slow, gentle sigh through your mouth. You are safe in this physical moment.";
+                }
+
+                return {
+                    t: `I'm really sorry you're going through this right now. Anxiety and panic attacks can feel intensely physical and frightening, but as overwhelming as this sensation is, your body is experiencing a natural surge of adrenaline—it will pass, and you are not in medical danger. I'm right here with you.\n\n${technique}\n\nWhat are you noticing most right now in your body?`,
+                    evidenceRef: "clark-panic-1986"
+                };
+            }
+
+            // 4. ACADEMIC, COLLEGE & WORK OVERWHELM
+            if (/(college|exam|exams|assignment|deadline|work|boss|studying|fail|overwhelmed with work|too much to do)/i.test(msg)) {
+                return {
+                    t: `Feeling buried under academic deadlines or work pressure is deeply exhausting. When demands pile up, your brain's working memory gets flooded, and everything begins to feel equally urgent and impossible.\n\nFirst, take a gentle pause. You don't have to solve everything in this single hour. Would you like to just vent about what's feeling most unmanageable, or would it feel helpful to pick one tiny, manageable piece to break down together?`,
+                    evidenceRef: "who-mhgap-stress"
+                };
+            }
+
+            // 5. GUILT, SHAME, SELF-CRITICISM & FEELINGS OF FAILURE
+            if (/(i'm a failure|im a failure|hate myself|worthless|i ruined everything|my fault|so stupid|disappointed in myself)/i.test(msg)) {
+                return {
+                    t: `That inner critical voice can be so heavy and painful when things go wrong. When we're stressed, our minds often turn against us, treating mistakes as proof of who we are.\n\nClinical research on self-compassion shows that making mistakes is part of being human—not evidence of failure. If a dear friend came to you with this exact situation, you would likely offer them understanding rather than cruelty. Can we try offering that same gentleness to yourself for just a moment?`,
+                    evidenceRef: "neff-germer-self-compassion"
+                };
+            }
+
+            // 6. SENSOR INQUIRIES ("Does my heart rate prove I'm anxious?", "Explain my numbers")
+            if (/(reading|sensor|heart rate|bpm|eda|gsr|numbers|does this mean|am i stressed|proof)/i.test(msg)) {
+                return {
+                    t: `Here is what your sensors currently show: heart rate is **${r.hr} BPM**, HRV is **${r.hrv} ms**, and skin conductance (EDA) is **${r.eda} μS**.\n\nIt's very important to know: a sensor reading is biological information, **not a clinical diagnosis**. In research studies like WESAD, heart rate and skin conductance shift with physical movement, caffeine, room temperature, hydration, and excitement—not solely emotional anxiety. Your body is giving you context, not a verdict on who you are. How are you actually feeling emotionally?`,
+                    evidenceRef: "nice-cg113"
+                };
+            }
+
+            // 7. GROUNDING & SENSORY REQUEST
+            if (/(ground|54321|5-4-3-2-1|dizzy|spaced out|unreal|dissociat)/i.test(msg)) {
+                return {
+                    t: `Let's practice the 5-4-3-2-1 sensory grounding exercise recommended by NHS clinical guidelines to help anchor your attention back into the room:\n\n1. Look around and name **5 things you can see** right now.\n2. Notice **4 things you can physically touch** (the chair, fabric of your shirt, a table).\n3. Listen for **3 distinct sounds** around you.\n4. Notice **2 things you can smell**.\n5. Notice **1 physical feeling or taste**.\n\nTake your time with each one. Which 3 sounds do you notice first?`,
+                    evidenceRef: "nhs-grounding-54321"
+                };
+            }
+
+            // 8. GENERAL EMPATHETIC LISTENING / OPEN INQUIRY
+            return {
+                t: `Thank you for sharing that with me. I'm listening closely. When we carry things inside, they tend to feel much bigger and heavier. You don't have to have everything figured out right now.\n\nWould you like to tell me a little more about what triggered this, or would you prefer to explore some practical steps together?`,
+                evidenceRef: primaryEvidence ? primaryEvidence.id : "nice-cg113"
+            };
+        }
+
+        /* ==========================================================================
+           SUPPORT & SILENT BREATHING SESSIONS
+           ========================================================================== */
+        const PH = [['INHALE', 4], ['HOLD', 4], ['EXHALE', 6], ['REST', 2]];
+        const TOT = 96;
+        const HAP = { INHALE: [150, 350, 150, 350], HOLD: [400], EXHALE: [900, 200, 900, 200], REST: [] };
+
+        const SUP = {
+            run: false, mode: 'choose', el: 0, paused: false, tm: null, ph: '', sess: null, gi: 0,
+            open(m) {
+                this.run = true; this.mode = m; OV.length = 0; OV.push({ k: 'support' }); ov();
+                if (m === 'breath') this.start();
+            },
+            start() {
+                this.stop(); this.mode = 'breath'; this.el = 0; this.paused = false; this.ph = '';
+                this.sess = { id: uid(), type: 'Guided breathing', start: Date.now(), hr0: E.r.hr, evId: E.ev ? E.ev.id : null };
+                ov();
+                this.tm = setInterval(() => { if (!this.paused) { this.el += 0.1; this.tick(); } }, 100);
+            },
+            stop() { clearInterval(this.tm); this.tm = null; },
+            tick() {
+                if (this.el >= TOT) return this.finish();
+                let t = this.el % 16, i = 0;
+                while (t >= PH[i][1]) { t -= PH[i][1]; i++; }
+                const [n, d] = PH[i];
+                if (n !== this.ph) {
+                    this.ph = n;
+                    const c = $('#circ'), pl = $('#pl');
+                    if (c) {
+                        c.style.transition = `transform ${n === 'INHALE' || n === 'EXHALE' ? d : 0}s linear`;
+                        c.style.transform = n === 'INHALE' ? 'scale(1)' : n === 'EXHALE' ? 'scale(.55)' : c.style.transform;
+                    }
+                    if (pl) pl.textContent = n;
+                    if (S.set.haptic && navigator.vibrate) navigator.vibrate(HAP[n]);
+                }
+                const tm = $('#tl');
+                if (tm) tm.textContent = Math.max(0, Math.ceil(TOT - this.el)) + 's remaining';
+            },
+            pause() {
+                this.paused = !this.paused;
+                const b = $('#pb'); if (b) b.textContent = this.paused ? 'Resume' : 'Pause';
+                if (this.paused && navigator.vibrate) navigator.vibrate(0);
+            },
+            finish() {
+                this.stop();
+                if (this.sess) { this.sess.dur = Math.round(this.el); this.sess.hr1 = E.r.hr; }
+                this.mode = 'check'; ov();
+            },
+            rate(f) {
+                const s = this.sess;
+                if (s && !S.sessions.includes(s)) {
+                    s.fb = f; s.hr1 = E.r.hr; S.sessions.push(s); save();
+                }
+                this.fb = f; this.mode = 'after'; ov();
+            },
+            close() {
+                this.stop(); this.run = false; OV.length = 0; ov(); render();
+            }
+        };
+
+        /* ==========================================================================
+           VIEWS: AUTHENTICATION, HOME, MONITOR, INSIGHTS, PROFILE
+           ========================================================================== */
+        let TAB = 'home', RANGE = 'today', OV = [];
+        let authTab = 'login'; // 'login' | 'register'
+        let pwdVisible = false;
+
+        /* --- AUTHENTICATION SCREEN --- */
+        function authScreen() {
+            return `
+    <div style="padding:28px 10px 40px;text-align:center">
+      <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:99px;background:var(--acc-light);margin-bottom:14px">
+        <span class="pulse-dot"></span>
+        <span style="font-weight:700;font-size:12px;color:var(--acc);letter-spacing:0.4px">WESAD CLINICAL ENGINE</span>
+      </div>
+      <h1 style="font-size:32px;margin-bottom:6px">CalmSignal</h1>
+      <div class="sub" style="font-size:14px;max-width:340px;margin:0 auto 20px">
+        Personalized physiological stress monitoring with evidence-based psychological support.
+      </div>
+
+      <div class="card" style="text-align:left;max-width:440px;margin:0 auto;box-shadow:var(--shadow-md)">
+        <div class="auth-nav">
+          <button class="${authTab === 'login' ? 'active' : ''}" data-a="auth_tab" data-tab="login">Log In</button>
+          <button class="${authTab === 'register' ? 'active' : ''}" data-a="auth_tab" data-tab="register">Create Account</button>
+        </div>
+
+        ${authTab === 'login' ? loginFormHTML() : registerFormHTML()}
+
+        <div style="border-top:1px solid var(--line);margin-top:18px;padding-top:14px;text-align:center">
+          <button class="btn sm sec full" data-a="demo_mode" style="border-style:dashed">
+            ⚡ Try CalmSignal Demo (Simulated Benchmark)
+          </button>
+          <div class="u" style="margin-top:8px">No account required to test features & WESAD dataset replays.</div>
+        </div>
+      </div>
+    </div>
+  `;
+        }
+
+        function loginFormHTML() {
+            return `
+    <label>Email Address</label>
+    <input id="l_email" type="email" placeholder="name@example.com" autocomplete="username">
+    <div class="err" id="l_err_email"></div>
+
+    <label>Password</label>
+    <div class="password-box">
+      <input id="l_pwd" type="${pwdVisible ? 'text' : 'password'}" placeholder="••••••••" autocomplete="current-password">
+      <button type="button" class="pwd-toggle" data-a="toggle_pwd">${pwdVisible ? 'Hide' : 'Show'}</button>
+    </div>
+    <div class="err" id="l_err_pwd"></div>
+
+    <div class="row sp" style="margin:10px 0 16px">
+      <label class="row" style="font-size:12px;font-weight:400;margin:0;cursor:pointer">
+        <input type="checkbox" id="l_rem" style="width:16px;height:16px" checked> Keep me logged in
+      </label>
+      <button class="chip" data-a="forgot_pwd" style="border:none;padding:0;font-size:12px;color:var(--acc)">Forgot password?</button>
+    </div>
+
+    <button class="btn full" data-a="submit_login" id="btn_login">Log In</button>
+  `;
+        }
+
+        function registerFormHTML() {
+            return `
+    <label>Full Name</label>
+    <input id="r_name" placeholder="Piyush Arya" autocomplete="name">
+    <div class="err" id="r_err_name"></div>
+
+    <label>Email Address</label>
+    <input id="r_email" type="email" placeholder="name@example.com" autocomplete="email">
+    <div class="err" id="r_err_email"></div>
+
+    <div class="g3">
+      <div>
+        <label>Age (yrs)</label>
+        <input id="r_age" type="number" min="5" max="120" placeholder="27">
+        <div class="err" id="r_err_age"></div>
+      </div>
+      <div>
+        <label>Weight (kg)</label>
+        <input id="r_wt" type="number" step="0.5" placeholder="75">
+        <div class="err" id="r_err_wt"></div>
+      </div>
+      <div>
+        <label>Height (cm)</label>
+        <input id="r_ht" type="number" step="0.5" placeholder="175">
+        <div class="err" id="r_err_ht"></div>
+      </div>
+    </div>
+
+    <label>Password (min 6 characters)</label>
+    <div class="password-box">
+      <input id="r_pwd" type="${pwdVisible ? 'text' : 'password'}" placeholder="••••••••" autocomplete="new-password">
+      <button type="button" class="pwd-toggle" data-a="toggle_pwd">${pwdVisible ? 'Hide' : 'Show'}</button>
+    </div>
+    <div class="err" id="r_err_pwd"></div>
+
+    <label>Confirm Password</label>
+    <input id="r_pwd2" type="${pwdVisible ? 'text' : 'password'}" placeholder="••••••••" autocomplete="new-password">
+    <div class="err" id="r_err_pwd2"></div>
+
+    <button class="btn full" data-a="submit_register" id="btn_register" style="margin-top:10px">Create Account & Start</button>
+    <div class="u" style="margin-top:10px;text-align:center">Stored securely on your private device session.</div>
+  `;
+        }
+
+        /* --- HOME DASHBOARD --- */
+        const val = k => {
+            const r = E.r;
+            if (k === 'sp') return r.sp == null ? '—' : r.sp;
+            if (k === 'eda') return r.eda.toFixed(2);
+            return r[k];
+        };
+
+        const metric = (k, l, u) => `
+  <div class="card" style="margin:0">
+    <div class="u">${l}</div>
+    <div class="m"><span data-v="${k}">${val(k)}</span> <span class="u">${u}</span></div>
+  </div>
+`;
+
+        function home() {
+            const hr = new Date().getHours();
+            const g = hr < 12 ? 'Good morning' : hr < 18 ? 'Good afternoon' : 'Good evening';
+            const st = E.state, r = E.r, e = lastEv();
+            const match = E.wesadMatch;
+            const userFirst = S.profile?.name ? esc(S.profile.name.split(' ')[0]) : (AUTH.isDemo ? 'Explorer' : 'Friend');
+
+            return `
+    ${AUTH.isDemo ? `
+      <div class="demo-banner">
+        <span>⚡ <b>DEMO MODE</b> · Using simulated data & WESAD clinical replays</span>
+        <button class="chip" data-a="auth_switch" style="font-size:11px;padding:3px 8px">Log In</button>
+      </div>
+    ` : ''}
+
+    <div class="row sp" style="margin-bottom:8px">
+      <div>
+        <h1>${g}, ${userFirst}</h1>
+        <div class="sub">CalmSignal Stress Monitor</div>
+      </div>
+      <button class="chip" data-a="sensor_modal" title="Manage Sensor Connection">
+        <span class="pulse-dot ${P.connected ? '' : 'orange'}"></span>
+        <span style="max-width:115px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(P.srcLabel.split(' ')[0])}</span>
+      </button>
+    </div>
+
+    <!-- Main Stress Score Card -->
+    <div class="card" style="margin-top:6px;border-left:6px solid ${STC[st]}">
+      <div class="row sp">
+        <h2 style="color:${STC[st]}" data-v="state">${STN[st]}</h2>
+        <span class="tag">${E.stage}</span>
+      </div>
+      <div class="row sp" style="align-items:baseline">
+        <div class="big"><span data-v="score">${Math.round(E.sc)}</span><span class="u" style="font-size:18px">/100</span></div>
+        <div style="text-align:right">
+          <span class="wesad-badge">WESAD ML</span>
+          <div class="sub" style="font-size:12px;margin-top:2px">${Math.round(E.probStress * 100)}% Stress Likelihood</div>
+        </div>
+      </div>
+
+      <div style="margin-top:8px">
+        <div class="meter-bar">
+          <div class="meter-pin" style="left:${Math.min(98, Math.max(2, E.sc))}%"></div>
+        </div>
+        <div class="gauge-row">
+          <span>Baseline (${getPopNorm('LOW', 'hr')?.toFixed(0)} BPM)</span>
+          <span>WESAD TSST Peak (${getPopNorm('HIGH', 'hr')?.toFixed(0)} BPM)</span>
+        </div>
+      </div>
+
+      <div class="row wrap" style="margin-top:14px">
+        <button class="btn sm" data-a="supp">Support</button>
+        <button class="btn sm sec" data-a="chat">Talk to Companion</button>
+        <button class="btn sm sec" data-a="sensor_modal">Switch Sensor</button>
+      </div>
+    </div>
+
+    <!-- WESAD Cohort Profile Match Card -->
+    <div class="card" style="border:1px solid rgba(39,102,106,0.25);background:linear-gradient(145deg,var(--card),rgba(39,102,106,0.04))">
+      <div class="row sp">
+        <h3>WESAD Cohort Match</h3>
+        <span class="tag gold">${match.similarity}% Similarity</span>
+      </div>
+      <div class="sub" style="margin-top:4px">
+        Your physiological readings align closest with **Subject ${match.subject}** during **${match.condition}** in the WESAD clinical study protocol.
+      </div>
+    </div>
+
+    <!-- Multi-Modal Sensor Grid -->
+    <div class="g2" style="margin-bottom:12px">
+      ${metric('hr', 'Heart Rate', 'BPM')}
+      ${metric('hrv', 'HRV RMSSD', 'ms')}
+      ${metric('eda', 'EDA / GSR', 'μS')}
+      ${metric('st', 'Skin Temp', '°C')}
+      <div class="card" style="margin:0;grid-column:span 2">
+        <div class="row sp">
+          <div>
+            <div class="u">Motion & Activity</div>
+            <div class="m" style="font-size:17px;margin-top:2px">${r.act} · ${r.mv} Intensity</div>
+          </div>
+          <div style="text-align:right">
+            <div class="u">Blood Oxygen</div>
+            <div class="m" style="font-size:17px;margin-top:2px"><span data-v="sp">${r.sp == null ? '—' : r.sp + '%'}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Diagnostic Insight -->
+    <div class="card">
+      <div class="row sp">
+        <h3>Physiological Context</h3>
+        <span class="tag">Evidence-Based</span>
+      </div>
+      <div class="sub" data-v="insight" style="margin-top:4px">${insight()}</div>
+    </div>
+
+    <!-- Context & Events -->
+    <div class="card">
+      <h3>Context</h3>
+      <div class="row wrap">${CTXS.map(c => `<button class="chip ${S.ctx === c ? 'on' : ''}" data-a="ctx" data-c="${c}">${c}</button>`).join('')}</div>
+    </div>
+
+    <div class="card">
+      <h3>Most Recent Stress Event</h3>
+      ${e ? `<button class="chip" style="width:100%;text-align:left;border-radius:12px" data-a="ev" data-id="${e.id}">${fmt(e.start)} · Peak ${STN[e.peak]} · Score: ${e.peakSc}/100</button>` : '<div class="sub">No stress events recorded yet.</div>'}
+    </div>
+  `;
+        }
+
+        function insight() {
+            const r = E.r, s = E.state;
+            if (['Exercising', 'Walking'].includes(S.ctx) || r.mv !== 'Low') {
+                return 'Your heart rate is higher alongside physical movement. Psychological stress response is suppressed.';
+            }
+            if (s === 'HIGH') {
+                return `Acute sympathetic stress response detected (Score: ${Math.round(E.sc)}). Elevated heart rate (+${(r.hr - bm('hr')).toFixed(0)} BPM) and skin conductance (${r.eda} μS) align with WESAD acute stress patterns.`;
+            }
+            if (s === 'ELEVATED') {
+                return `Signals moving away from baseline pattern (HR ${r.hr} BPM, EDA ${r.eda} μS). Noticeable sympathetic arousal.`;
+            }
+            if (s === 'RECOVERING') {
+                return 'Vitals returning toward baseline norm. HRV RMSSD is rebounding and skin temperature is stabilizing.';
+            }
+            return `Signals are within your usual resting range (HR usual: ${rtxt('hr')} BPM, EDA usual: ${rtxt('eda', 2)} μS).`;
+        }
+
+        function ecgHTML() { return `<canvas id="ecg"></canvas>`; }
+
+        /* --- LIVE MONITOR VIEW --- */
+        function monitor() {
+            const r = E.r, st = P.status();
+            return `
+    <div class="row sp" style="margin-bottom:8px">
+      <h1>Live Monitor</h1>
+      <button class="btn sm sec" data-a="sensor_modal">Hardware Connect</button>
+    </div>
+    <div class="sub" style="margin-bottom:12px">Continuous telemetry stream from ${P.srcLabel}.</div>
+
+    <div class="card" style="border-color:rgba(39,102,106,0.3);background:var(--acc-light)">
+      <div class="row sp">
+        <div class="row">
+          <span class="pulse-dot ${P.connected ? '' : 'orange'}"></span>
+          <div>
+            <b>${esc(P.srcLabel)}</b>
+            <div class="u">${P.packetsCount} packets received · ${P.connected ? 'Active telemetry' : 'Awaiting data'}</div>
+          </div>
+        </div>
+        <button class="btn sm" data-a="sensor_modal">Configure</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Heart & Waveform</h2>
+      <div class="g2" style="margin-bottom:8px">
+        <div><div class="m"><span data-v="hr">${r.hr}</span> <span class="u">BPM</span></div><div class="u">usual ${rtxt('hr')}</div></div>
+        <div><div class="m"><span data-v="hrv">${r.hrv}</span> <span class="u">ms RMSSD</span></div><div class="u">usual ${rtxt('hrv')}</div></div>
+      </div>
+      ${ecgHTML()}
+      <div class="u" style="margin-top:4px">Real-time rhythm synchronization with heart rate</div>
+    </div>
+
+    <div class="card">
+      <div class="row sp">
+        <h2>Electrodermal Activity (GSR)</h2>
+        <span class="tag" style="color:var(--eda)">Sympathetic Arousal</span>
+      </div>
+      <div class="g2" style="margin:8px 0">
+        <div><div class="m" style="color:var(--eda)"><span data-v="eda">${r.eda.toFixed(2)}</span> <span class="u">μS</span></div><div class="u">Skin Conductance</div></div>
+        <div><div class="m">${(r.eda - bm('eda')).toFixed(2)} <span class="u">μS</span></div><div class="u">Baseline Drift</div></div>
+      </div>
+      <div class="bar" style="margin:6px 0"><i style="width:${Math.min(100, Math.round((r.eda / 8.0) * 100))}%;background:var(--eda)"></i></div>
+      <div class="u">Primary physiological marker of stress in the WESAD clinical study</div>
+    </div>
+
+    <div class="card">
+      <h2>Oxygen & Temperature</h2>
+      <div class="g2">
+        <div><div class="m" data-v="sp2">${r.sp == null ? 'Unreliable' : r.sp + '%'}</div><div class="u">Pulse Oximetry (SpO₂)</div></div>
+        <div><div class="m" data-v="st">${r.st}°C</div><div class="u">Wrist Skin Temp</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Device Telemetry</h2>
+      ${st.map(([a, b]) => `
+        <div class="row sp" style="padding:4px 0;border-bottom:1px solid var(--line)">
+          <span>${a}</span>
+          <span class="tag" style="color:${b.includes('lost') ? 'var(--r)' : 'var(--acc)'}">${b}</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+        }
+
+        /* --- INSIGHTS VIEW --- */
+        function insights() {
+            const evs = S.events;
+            const n = evs.length;
+            const ND = '<div class="sub">Not enough data recorded yet.</div>';
+
+            return `
+    <h1>Insights & Analytics</h1>
+    <div class="sub" style="margin-bottom:12px">Continuous WESAD-normative clinical comparisons.</div>
+
+    <div class="card">
+      <h2>WESAD Population Norms</h2>
+      <div class="sub" style="margin-bottom:8px">Empirical averages from the 15 WESAD study participants:</div>
+      <div class="row sp" style="padding:4px 0"><span>Calm Baseline HR:</span> <b>${getPopNorm('LOW', 'hr')?.toFixed(1)} ± ${WESAD_POP_DEFAULTS.LOW.hr.std} BPM</b></div>
+      <div class="row sp" style="padding:4px 0"><span>TSST Acute Stress HR:</span> <b>${getPopNorm('HIGH', 'hr')?.toFixed(1)} ± ${WESAD_POP_DEFAULTS.HIGH.hr.std} BPM</b></div>
+      <div class="row sp" style="padding:4px 0"><span>Baseline EDA:</span> <b>${getPopNorm('LOW', 'eda')?.toFixed(2)} μS</b></div>
+      <div class="row sp" style="padding:4px 0"><span>Meditation HRV RMSSD:</span> <b>${getPopNorm('RECOVERING', 'rmssd')?.toFixed(1)} ms</b></div>
+    </div>
+
+    <div class="card">
+      <h2>Stress Timeline</h2>
+      ${n ? [...evs].reverse().slice(0, 6).map(e => `
+        <button class="chip" style="width:100%;text-align:left;border-radius:12px;margin-bottom:6px" data-a="ev" data-id="${e.id}">
+          ${fday(e.start)} ${fmt(e.start)} · ${STN[e.peak]} · Peak Score: ${e.peakSc}/100
+        </button>
+      `).join('') : ND}
+    </div>
+
+    <div class="card">
+      <div class="row sp">
+        <h2>Trigger Journal</h2>
+        <button class="btn sm" data-a="jnew">New entry</button>
+      </div>
+      ${S.journal.length ? [...S.journal].reverse().map(j => `
+        <div style="border-top:1px solid var(--line);padding:8px 0">
+          <b>${esc(j.trig)}</b>
+          <div class="u">${fday(j.t)} ${fmt(j.t)} · HR ${j.hr || '—'}, Score ${j.sc || '—'}</div>
+          <div>${esc(j.text)}</div>
+          <div class="row" style="margin-top:4px">
+            <button class="btn sm sec" data-a="jdel" data-id="${j.id}">Delete</button>
+          </div>
+        </div>
+      `).join('') : '<div class="sub">No journal entries recorded.</div>'}
+    </div>
+  `;
+        }
+
+        /* --- PROFILE & ACCOUNT SETTINGS --- */
+        function profile() {
+            const p = S.profile || {};
+            const isDemo = AUTH.isDemo;
+            const wt = p.wt || 70, ht = p.ht || 175;
+            const bmi = (wt / ((ht / 100) * (ht / 100))).toFixed(1);
+
+            return `
+    <h1>Profile & Settings</h1>
+    
+    <div class="card" style="margin-top:10px">
+      <div class="row sp">
+        <h2>Personal Biometrics</h2>
+        <button class="btn sm sec" data-a="pedit">Edit Profile</button>
+      </div>
+      <div><b>${esc(p.name || 'User Profile')}</b></div>
+      <div class="sub">${esc(p.email || 'No email saved')}</div>
+      <div class="sub" style="margin-top:4px">
+        ${p.age || 26} yrs · ${wt} kg · ${ht} cm · BMI: <b>${bmi}</b>
+      </div>
+      <div class="u" style="margin-top:6px;font-size:11px">
+        BMI is computed for demographic cohort matching and baseline normalization with WESAD subjects; it is not a clinical assessment.
+      </div>
+    </div>
+
+    <!-- Contacts Hub Shortcut -->
+    <div class="card">
+      <div class="row sp">
+        <div>
+          <h2>Contacts & Helplines</h2>
+          <div class="sub">${S.contacts.length} saved contact(s) · Verified emergency helplines</div>
+        </div>
+        <button class="btn sm" data-a="contacts_view">Manage</button>
+      </div>
+    </div>
+
+    <!-- App & Privacy Controls -->
+    <div class="card">
+      <h2>Privacy & Personalization</h2>
+      <label class="row sp" style="font-weight:400;cursor:pointer">
+        <span><b>AI Personalization</b><div class="sub">Allow approved context to tailor responses</div></span>
+        <input type="checkbox" style="width:20px" data-a="tog_set" data-k="ai" ${S.set.ai ? 'checked' : ''}>
+      </label>
+      <label class="row sp" style="font-weight:400;cursor:pointer">
+        <span><b>Chatbot Memory</b><div class="sub">Remember conversation context on this device</div></span>
+        <input type="checkbox" style="width:20px" data-a="tog_set" data-k="chatMemory" ${S.set.chatMemory ? 'checked' : ''}>
+      </label>
+      <label class="row sp" style="font-weight:400;cursor:pointer">
+        <span><b>Haptic Vibration</b><div class="sub">Vibrate phone on breathing cycles (supported devices)</div></span>
+        <input type="checkbox" style="width:20px" data-a="tog_set" data-k="haptic" ${S.set.haptic ? 'checked' : ''}>
+      </label>
+    </div>
+
+    <!-- Account Actions -->
+    <div class="card">
+      <h2>Account Actions</h2>
+      <div class="sub" style="margin-bottom:10px">
+        Account Type: <b>${isDemo ? 'Demo Mode (Simulated)' : 'Authenticated User Account'}</b>
+      </div>
+      <div class="row wrap">
+        <button class="btn sm sec" data-a="export_data">Export Health Data</button>
+        <button class="btn sm sec" data-a="clear_chat">Clear Chat History</button>
+        <button class="btn sm sec" data-a="rbase">Reset Baseline</button>
+        <button class="btn sm red" data-a="logout_act">Log Out</button>
+      </div>
+    </div>
+  `;
+        }
+
+        /* ==========================================================================
+           ENHANCED CONTACTS MANAGEMENT (EMERGENCY & FAMILY/PERSONAL)
+           ========================================================================== */
+        let contactsTab = 'emergency'; // 'emergency' | 'personal'
+
+        function contactsViewHTML() {
+            const emContacts = S.contacts.filter(c => c.cat === 'emergency' || c.pri);
+            const personalContacts = S.contacts.filter(c => c.cat !== 'emergency' && !c.pri);
+            const activeList = contactsTab === 'emergency' ? emContacts : personalContacts;
+
+            return `
+    <div class="hd">
+      <h1 style="font-size:22px">Trusted Contacts & Helplines</h1>
+      <button class="btn sm sec" data-a="back">Close</button>
+    </div>
+
+    <!-- Verified Clinical Helplines -->
+    <div class="card" style="border-left:4px solid var(--r)">
+      <div class="row sp">
+        <h3>Emergency & Support Helplines</h3>
+        <span class="tag red">24/7 Support</span>
+      </div>
+      <div class="sub" style="margin:4px 0 10px">Free, confidential mental health and emergency lines:</div>
+      ${HELP.map(h => `
+        <div class="row sp" style="padding:6px 0;border-bottom:1px solid var(--line)">
+          <div>
+            <b>${esc(h.n)}</b>
+            <div class="u">${esc(h.d)} · <b>${esc(h.num)}</b></div>
+          </div>
+          <a class="btn sm red" href="tel:${esc(h.num)}">Call</a>
+        </div>
+      `).join('')}
+    </div>
+
+    <!-- Category Tabs & Add Button -->
+    <div class="row sp" style="margin:16px 0 10px">
+      <div class="row">
+        <button class="chip ${contactsTab === 'emergency' ? 'on' : ''}" data-a="tab_contacts" data-tab="emergency">
+          Emergency Contacts (${emContacts.length})
+        </button>
+        <button class="chip ${contactsTab === 'personal' ? 'on' : ''}" data-a="tab_contacts" data-tab="personal">
+          Family & Friends (${personalContacts.length})
+        </button>
+      </div>
+      <button class="btn sm" data-a="add_contact">+ Add</button>
+    </div>
+
+    <!-- Contacts Cards List -->
+    ${activeList.length ? activeList.map(c => `
+      <div class="card" style="margin-bottom:10px">
+        <div class="row sp">
+          <div>
+            <b>${esc(c.name)}</b>
+            <span class="tag" style="margin-left:6px">${esc(c.rel || 'Contact')}</span>
+            ${c.pri ? '<span class="tag gold" style="margin-left:4px">★ Primary</span>' : ''}
+          </div>
+          <span class="tag">${c.cat === 'emergency' ? 'Emergency' : 'Personal'}</span>
+        </div>
+        <div class="sub" style="margin:4px 0">${esc(c.ph)} ${c.email ? '· ' + esc(c.email) : ''}</div>
+        ${c.notes ? `<div class="u" style="font-style:italic">Note: ${esc(c.notes)}</div>` : ''}
+
+        <div class="row wrap" style="margin-top:10px">
+          <a class="btn sm" href="tel:${esc(c.ph.replace(/[^+\d]/g, ''))}">Call</a>
+          ${c.email ? `<a class="btn sm sec" href="mailto:${esc(c.email)}">Email</a>` : ''}
+          <button class="btn sm sec" data-a="draft_msg" data-id="${c.id}">Draft Message</button>
+          <button class="btn sm sec" data-a="edit_contact" data-id="${c.id}">Edit</button>
+          <button class="btn sm sec" data-a="toggle_pri" data-id="${c.id}">${c.pri ? 'Unmark Primary' : 'Make Primary'}</button>
+          <button class="btn sm sec" style="color:var(--r)" data-a="del_contact" data-id="${c.id}">Delete</button>
+        </div>
+      </div>
+    `).join('') : `
+      <div class="card" style="text-align:center;padding:24px 10px">
+        <div class="sub">No ${contactsTab === 'emergency' ? 'emergency contacts' : 'family members'} saved yet.</div>
+        <button class="btn sm sec" data-a="add_contact" style="margin-top:10px">+ Add ${contactsTab === 'emergency' ? 'Emergency Contact' : 'Family Member'}</button>
+      </div>
+    `}
+
+    <div class="u" style="margin-top:12px;font-size:11.5px">
+      Privacy Promise: CalmSignal never automatically calls or sends messages without your explicit tap.
+    </div>
+  `;
+        }
+
+        function contactFormHTML(contactId = null) {
+            const c = contactId ? S.contacts.find(x => x.id === contactId) : null;
+            const isEdit = !!c;
+
+            return `
+    ${back(isEdit ? 'Edit Contact' : 'Add Contact')}
+    <div class="card">
+      <label>Full Name</label>
+      <input id="c_name" value="${esc(c?.name || '')}" placeholder="e.g. Priya Sharma">
+      <div class="err" id="c_err_name"></div>
+
+      <label>Relationship</label>
+      <select id="c_rel">
+        ${['Mother', 'Father', 'Sister', 'Brother', 'Spouse', 'Partner', 'Friend', 'Doctor / Therapist', 'Relative', 'Other'].map(r => `
+          <option ${c && c.rel === r ? 'selected' : ''}>${r}</option>
+        `).join('')}
+      </select>
+
+      <label>Phone Number (with country code)</label>
+      <input id="c_ph" value="${esc(c?.ph || '')}" placeholder="+91 98765 43210" inputmode="tel">
+      <div class="err" id="c_err_ph"></div>
+
+      <label>Email Address (optional)</label>
+      <input id="c_email" value="${esc(c?.email || '')}" placeholder="priya@example.com" inputmode="email">
+
+      <label>Category</label>
+      <div class="row" style="margin:6px 0 10px">
+        <label class="row" style="margin:0;cursor:pointer">
+          <input type="radio" name="c_cat" value="emergency" style="width:18px" ${!c || c.cat === 'emergency' ? 'checked' : ''}>
+          <span><b>Emergency Contact</b> (High-stress check-in)</span>
+        </label>
+      </div>
+      <div class="row" style="margin:0 0 14px">
+        <label class="row" style="margin:0;cursor:pointer">
+          <input type="radio" name="c_cat" value="personal" style="width:18px" ${c && c.cat === 'personal' ? 'checked' : ''}>
+          <span><b>Family / Personal</b> (Trusted circle)</span>
+        </label>
+      </div>
+
+      <label class="row" style="font-weight:400;margin-bottom:12px;cursor:pointer">
+        <input type="checkbox" id="c_pri" style="width:18px" ${c?.pri ? 'checked' : ''}>
+        <span>Mark as Primary Emergency Contact</span>
+      </label>
+
+      <label>Personal Notes (optional)</label>
+      <textarea id="c_notes" rows="2" placeholder="e.g. Knows my anxiety triggers; lives nearby">${esc(c?.notes || '')}</textarea>
+
+      <button class="btn full" data-a="save_contact" data-id="${contactId || ''}" style="margin-top:14px">
+        ${isEdit ? 'Save Changes' : 'Add Contact'}
+      </button>
+    </div>
+  `;
+        }
+
+        function draftMessageModalHTML(contactId) {
+            const c = S.contacts.find(x => x.id === contactId);
+            if (!c) return '';
+            const myName = S.profile?.name ? S.profile.name.split(' ')[0] : 'me';
+            const preText = `Hi ${c.name}, I am experiencing a stressful moment right now and could really use a few minutes to talk or check in. - ${myName}`;
+
+            return `
+    ${back('Draft Support Message')}
+    <div class="card">
+      <h3>Reach Out to ${esc(c.name)}</h3>
+      <div class="sub" style="margin-bottom:10px">Review or edit this message before sending. Nothing is sent automatically.</div>
+      
+      <label>Message Content</label>
+      <textarea id="draft_text" rows="4">${esc(preText)}</textarea>
+
+      <div class="row wrap" style="margin-top:14px">
+        <a class="btn full" href="sms:${esc(c.ph)}?&body=${encodeURIComponent(preText)}" target="_blank">
+          Send via SMS / Messaging App
+        </a>
+        <a class="btn sec full" href="tel:${esc(c.ph.replace(/[^+\d]/g, ''))}">
+          Call ${esc(c.name)} Instead
+        </a>
+      </div>
+    </div>
+  `;
+        }
+
+        /* ==========================================================================
+           AI MENTAL HEALTH SUPPORT COMPANION (CHATBOT VIEW)
+           ========================================================================== */
+        function chatViewHTML() {
+            const history = S.chatHistory || [];
+
+            return `
+    <div class="hd">
+      <div class="row">
+        <h1 style="font-size:21px">Mental Health Companion</h1>
+        <span class="wesad-badge">Evidence-Based</span>
+      </div>
+      <button class="btn sm sec" data-a="back">Close</button>
+    </div>
+    
+    <div class="sub" style="margin-bottom:8px">
+      Psychologically informed, empathetic companion grounded in NICE & WHO clinical frameworks.
+    </div>
+
+    <!-- Messages Container -->
+    <div id="msgs" style="min-height:260px;max-height:48vh;overflow-y:auto;padding-right:4px;margin-bottom:10px">
+      ${history.length ? history.map(m => `
+        <div class="msg ${m.r}">
+          ${esc(m.t).replace(/\n/g, '<br>')}
+          ${m.evRef ? `
+            <div>
+              <span class="evidence-pill" data-a="view_evidence" data-id="${esc(m.evRef)}">
+                📚 ${getEvidenceTitle(m.evRef)}
+              </span>
+            </div>
+          ` : ''}
+        </div>
+      `).join('') : `
+        <div class="msg bot">
+          Hello ${esc(S.profile?.name?.split(' ')[0] || '')}. I am your CalmSignal support companion. I am here to listen with empathy, help you navigate stressful emotions, and offer evidence-based guidance whenever you need it. How are you feeling right now?
+        </div>
+      `}
+    </div>
+
+    <!-- Adaptive Suggestion Chips -->
+    <div class="row wrap" style="margin-bottom:10px">
+      <button class="chip" data-a="cq" data-q="I am feeling overwhelmed by college and exams">Exams & Overwhelm</button>
+      <button class="chip" data-a="cq" data-q="I am having an anxiety attack">Anxiety Attack</button>
+      <button class="chip" data-a="cq" data-q="Help me ground myself with 5-4-3-2-1">5-4-3-2-1 Grounding</button>
+      <button class="chip" data-a="cq" data-q="Does my heart rate prove I'm anxious?">Explain My Sensors</button>
+      <button class="chip" data-a="cq" data-q="I feel like a failure today">Self-Criticism</button>
+    </div>
+
+    <!-- Input Bar -->
+    <div class="row">
+      <input id="ci" placeholder="What is on your mind?..." onkeydown="if(event.key==='Enter')$('#csend').click()">
+      <button class="btn" id="csend" data-a="csend">Send</button>
+    </div>
+
+    <div class="row sp" style="margin-top:8px">
+      <button class="chip" data-a="new_chat" style="font-size:11px">New Conversation</button>
+      <span class="u" style="font-size:10.5px">Support tool · Not a substitute for clinical care</span>
+    </div>
+  `;
+        }
+
+        function getEvidenceTitle(id) {
+            const item = EVIDENCE.find(x => x.id === id);
+            if (!item) return 'Clinical Evidence';
+            return item.evidence_type.split('(')[0].trim();
+        }
+
+        function evidenceDrawerHTML(evidenceId) {
+            const item = EVIDENCE.find(x => x.id === evidenceId);
+            if (!item) return back('Evidence');
+
+            return `
+    ${back('Evidence Source Details')}
+    <div class="card" style="border-left:4px solid var(--acc)">
+      <div class="row sp">
+        <span class="tag" style="background:var(--acc-light);color:var(--acc)">${esc(item.evidence_type)}</span>
+        <span class="sub">${item.year}</span>
+      </div>
+      <h2 style="margin:8px 0 4px;font-size:17px">${esc(item.title)}</h2>
+      <div class="sub"><b>Organization / Authors:</b> ${esc(item.org_or_authors)}</div>
+      <div style="margin:12px 0;line-height:1.5">${esc(item.summary)}</div>
+      
+      ${item.clinical_quote ? `
+        <div style="background:var(--bg);border-left:3px solid var(--acc);padding:8px 12px;border-radius:6px;font-style:italic;font-size:13px;margin:10px 0">
+          "${esc(item.clinical_quote)}"
+        </div>
+      ` : ''}
+
+      ${item.url ? `
+        <a class="btn sm full" href="${esc(item.url)}" target="_blank" rel="noopener">
+          View Official Publication
+        </a>
+      ` : ''}
+    </div>
+  `;
+        }
+
+        /* ==========================================================================
+           WESAD REPLAY & SENSOR MODAL
+           ========================================================================== */
+        function sensorModalHTML() {
+            const allSubjs = ['S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17'];
+            const subjs = WESAD?.replay_streams ? Object.keys(WESAD.replay_streams) : allSubjs;
+            const curSubj = P.wesadSubj;
+            const demo = WESAD?.subject_demographics?.[curSubj] || { age: 27, gender: 'male', weight: 80, height: 175 };
+
+            return `
+    <div class="hd">
+      <h1 style="font-size:22px">Hardware & Sensor Ingestion</h1>
+      <button class="btn sm sec" data-a="back">Close</button>
+    </div>
+
+    <div class="card">
+      <div class="row sp">
+        <div>
+          <b>Current Sensor Source</b>
+          <div class="sub">${P.srcLabel}</div>
+        </div>
+        <span class="tag ${P.connected ? 'green' : ''}">${P.connected ? 'Active' : 'Standby'}</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>1. Live Hardware (ESP32 / Wearable)</h3>
+      <div class="sub" style="margin-bottom:10px">Connect physical hardware via Bluetooth, USB cable, or WiFi:</div>
+      <div class="row wrap">
+        <button class="btn sm" data-a="connect_ble">Connect Bluetooth (BLE)</button>
+        <button class="btn sm sec" data-a="connect_serial">Connect USB Serial</button>
+        <button class="btn sm sec" data-a="connect_sse">Connect WiFi Server</button>
+      </div>
+    </div>
+
+    <div class="card" style="border:1.5px solid var(--acc)">
+      <div class="row sp">
+        <h3>2. WESAD Clinical Dataset Replay</h3>
+        <span class="wesad-badge">15 Subjects Integrated</span>
+      </div>
+      <div class="sub" style="margin:4px 0 10px">Replay empirical clinical data from all 15 WESAD subjects:</div>
+
+      <label>Select Subject</label>
+      <div class="row wrap">
+        ${subjs.map(s => `<button class="chip ${P.wesadSubj === s ? 'on' : ''}" data-a="pick_subj" data-s="${s}">${s}</button>`).join('')}
+      </div>
+      <div class="sub" style="margin:6px 0">Subject ${curSubj}: ${demo.gender}, Age ${demo.age}, Height ${demo.height} cm, Weight ${demo.weight} kg</div>
+
+      <label>Select Study Protocol Condition</label>
+      <div class="row wrap" style="margin-top:4px">
+        <button class="chip ${P.wesadScn === 'normal' ? 'on' : ''}" data-a="pick_scn" data-scn="normal">Baseline Calm (Resting)</button>
+        <button class="chip ${P.wesadScn === 'high' ? 'on' : ''}" data-a="pick_scn" data-scn="high">TSST Stress (Math & Speech)</button>
+        <button class="chip ${P.wesadScn === 'recovery' ? 'on' : ''}" data-a="pick_scn" data-scn="recovery">Meditation (Recovery)</button>
+        <button class="chip ${P.wesadScn === 'elevated' ? 'on' : ''}" data-a="pick_scn" data-scn="elevated">Amusement (Video Clips)</button>
+      </div>
+    </div>
+  `;
+        }
+
+        function forgotPasswordModalHTML() {
+            return `
+    ${back('Reset Password')}
+    <div class="card">
+      <div class="sub" style="margin-bottom:12px">Enter your account email to set a new password.</div>
+      <label>Registered Email</label>
+      <input id="fp_email" type="email" placeholder="name@example.com">
+      <div class="err" id="fp_err_email"></div>
+      
+      <label>New Password (min 6 characters)</label>
+      <input id="fp_pwd" type="password" placeholder="••••••••">
+      <div class="err" id="fp_err_pwd"></div>
+
+      <button class="btn full" data-a="submit_reset_pwd" style="margin-top:12px">Update Password</button>
+    </div>
+  `;
+        }
+
+        function profileEditModalHTML() {
+            const p = S.profile || {};
+            return `
+    ${back('Edit Personal Details')}
+    <div class="card">
+      <label>Full Name</label>
+      <input id="pe_name" value="${esc(p.name || '')}">
+      <div class="err" id="pe_err_name"></div>
+
+      <label>Age (years)</label>
+      <input id="pe_age" type="number" value="${p.age || 26}">
+      <div class="err" id="pe_err_age"></div>
+
+      <label>Body Weight (kg)</label>
+      <input id="pe_wt" type="number" step="0.5" value="${p.wt || 70}">
+      <div class="err" id="pe_err_wt"></div>
+
+      <label>Height (cm)</label>
+      <input id="pe_ht" type="number" step="0.5" value="${p.ht || 175}">
+      <div class="err" id="pe_err_ht"></div>
+
+      <button class="btn full" data-a="submit_pe" style="margin-top:14px">Save Changes</button>
+    </div>
+  `;
+        }
+
+        /* ==========================================================================
+           MODALS ROUTER (OVERLAYS)
+           ========================================================================== */
+        const back = t => `<div class="hd"><h1 style="font-size:22px">${t}</h1><button class="btn sm sec" data-a="back">Close</button></div>`;
+
+        function view(o) {
+            switch (o.k) {
+                case 'support': return supportV();
+                case 'chat': return chatViewHTML();
+                case 'sensor_modal': return sensorModalHTML();
+                case 'contacts': return contactsViewHTML();
+                case 'contact_form': return contactFormHTML(o.id);
+                case 'draft_msg': return draftMessageModalHTML(o.id);
+                case 'forgot_pwd': return forgotPasswordModalHTML();
+                case 'pedit': return profileEditModalHTML();
+                case 'evidence': return evidenceDrawerHTML(o.id);
+                case 'jform': {
+                    return `
+        ${back('New Journal Entry')}
+        <div class="card">
+          <label>What was happening?</label>
+          <div class="row wrap" id="tr">${TRIG.map(t => `<button class="chip" data-a="jt" data-t="${t}">${t}</button>`).join('')}</div>
+          <label>Notes (optional)</label>
+          <textarea id="jx" rows="3" placeholder="What felt challenging today?"></textarea>
+          <div class="err" id="je"></div>
+          <button class="btn full" data-a="jsave" style="margin-top:10px">Save Entry</button>
+        </div>
+      `;
+                }
+            }
+        }
+
+        function supportV() {
+            const m = SUP.mode;
+            if (m === 'choose') return `
+    ${back('Support & Coping Resets')}
+    <div class="card">
+      <h3>Level 1 · Guided Breathing</h3>
+      <div class="sub">4s inhale, 4s hold, 6s exhale, 2s rest (autonomic down-regulation).</div>
+      <button class="btn sm" data-a="sb" style="margin-top:8px">Start Breathing</button>
+    </div>
+    <div class="card">
+      <h3>Level 2 · 5-4-3-2-1 Sensory Grounding</h3>
+      <div class="sub">Anchor attention into physical space to interrupt panic rumination.</div>
+      <button class="btn sm sec" data-a="sg" style="margin-top:8px">Start Grounding</button>
+    </div>
+  `;
+            if (m === 'breath') return `
+    <div style="text-align:center;padding:10px 0">
+      <h1>SILENT SUPPORT</h1>
+      <div class="sub">Paced physiological reset</div>
+      <div class="circle" id="circ"></div>
+      <h2 id="pl">Get ready</h2>
+      <div class="sub" id="tl"></div>
+      <div class="row" style="justify-content:center;margin-top:16px">
+        <button class="btn sec" id="pb" data-a="pause">Pause</button>
+        <button class="btn" data-a="sfin">End Session</button>
+      </div>
+    </div>
+  `;
+            if (m === 'check') return `
+    ${back('Session Check-In')}
+    <div class="card">
+      <h3>How are you feeling right now?</h3>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-top:10px">
+        ${['Much better', 'A little better', 'About the same', 'Still anxious', 'Worse'].map(f => `
+          <button class="btn sec full" data-a="rate" data-f="${f}">${f}</button>
+        `).join('')}
+      </div>
+    </div>
+  `;
+            return `
+    ${back('Session Complete')}
+    <div class="card">
+      <div class="sub">Thank you for taking a moment for yourself. You noted feeling: <b>${esc(SUP.fb)}</b>.</div>
+      <button class="btn sm" data-a="sclose" style="margin-top:12px">Return to Dashboard</button>
+    </div>
+  `;
+        }
+
+        /* ==========================================================================
+           RENDER & ROUTER ENGINE
+           ========================================================================== */
+        function render() {
+            const m = $('#main');
+            if (!m) return;
+            try {
+                // Check if authenticated or in demo mode
+                if (!AUTH.user && !AUTH.isDemo) {
+                    m.innerHTML = authScreen();
+                    $('#nav')?.remove();
+                    return;
+                }
+
+                const sc = m.scrollTop;
+                const viewFn = { home, monitor, insights, profile }[TAB];
+                m.innerHTML = viewFn ? viewFn() : home();
+                m.scrollTop = sc;
+
+                $('#nav')?.remove();
+                const n = document.createElement('nav');
+                n.id = 'nav';
+                n.innerHTML = ['home', 'monitor', 'insights', 'profile'].map(t => `
+      <button class="${TAB === t ? 'on' : ''}" data-a="tab" data-t="${t}">
+        ${t[0].toUpperCase() + t.slice(1)}
+      </button>
+    `).join('');
+                $('#app').insertBefore(n, $('#ov'));
+
+                if (TAB === 'monitor') ecgStart();
+            } catch (err) {
+                console.error("Render error:", err);
+                m.innerHTML = `
+      <div class="card" style="margin:24px 8px;text-align:center;padding:24px">
+        <h2 style="color:var(--r)">Temporary Interface Glitch</h2>
+        <div class="sub" style="margin:10px 0 16px">${esc(err.message)}</div>
+        <button class="btn sm" onclick="localStorage.removeItem('calmsignal_auth_session');location.reload()">Reset Session & Refresh</button>
+      </div>
+    `;
+            }
+        }
+
+        function ov() {
+            const o = $('#ov'), t = OV[OV.length - 1];
+            o.innerHTML = t ? view(t) : '';
+            o.scrollTop = 0;
+        }
+
+        const push = o => { OV.push(o); ov(); };
+
+        function live() {
+            document.querySelectorAll('[data-v]').forEach(e => {
+                const k = e.dataset.v, r = E.r;
+                if (k === 'score') e.textContent = Math.round(E.sc);
+                else if (k === 'state') e.textContent = STN[E.state];
+                else if (k === 'insight') e.textContent = insight();
+                else if (k === 'sp2') e.textContent = r.sp == null ? 'Unreliable' : r.sp + '%';
+                else if (k === 'st' && e.classList.contains('m')) e.textContent = r.st + '°C';
+                else if (k === 'eda') e.textContent = r.eda.toFixed(2);
+                else e.textContent = val(k);
+            });
+        }
+
+        // Main 1-second interval loop
+        setInterval(() => {
+            const r = P.tick();
+            E.step(r);
+            if (r.mv === 'Low' && E.state === 'LOW' && !['Exercising', 'Walking'].includes(S.ctx)) {
+                ['hr', 'hrv', 'eda', 'st'].forEach(k => upd(k, r[k]));
+                if (r.sp != null) upd('sp', r.sp);
+            }
+            if (AUTH.user || AUTH.isDemo) {
+                live();
+            }
+        }, 1000);
+
+        /* Real-time ECG Canvas */
+        let ecgOn = false, buf = [], ph = 0, lt = 0;
+        const g_ecg = (x, c, w, a) => a * Math.exp(-((x - c) ** 2) / (2 * w * w));
+        function ecgStart() {
+            if (ecgOn) return;
+            ecgOn = true; lt = performance.now();
+            requestAnimationFrame(ecgLoop);
+        }
+        function ecgLoop(t) {
+            const c = $('#ecg');
+            if (!c) { ecgOn = false; return; }
+            const dt = (t - lt) / 1000; lt = t;
+            ph += dt * E.r.hr / 60;
+            const n = Math.max(1, Math.round(dt * 120));
+            for (let i = 0; i < n; i++) {
+                const x = (ph + i * 0) % 1;
+                buf.push(
+                    g_ecg(x, .15, .025, .12) - g_ecg(x, .27, .008, .12) +
+                    g_ecg(x, .3, .01, 1.0) - g_ecg(x, .33, .01, .2) +
+                    g_ecg(x, .55, .04, .25) + (Math.random() - .5) * .02
+                );
+            }
+            while (buf.length > 300) buf.shift();
+            const w = c.width = c.clientWidth, h = c.height = c.clientHeight, x = c.getContext('2d');
+            x.strokeStyle = '#2E8B62'; x.lineWidth = 1.8; x.beginPath();
+            buf.forEach((v, i) => {
+                const px = i * w / 300, py = h * .8 - v * h * .65;
+                i ? x.lineTo(px, py) : x.moveTo(px, py);
+            });
+            x.stroke();
+            requestAnimationFrame(ecgLoop);
+        }
+
+        /* ==========================================================================
+           EVENT HANDLERS & ACTIONS
+           ========================================================================== */
+        const gv = id => $('#' + id)?.value ?? '';
+
+        const A = {
+            tab(d) { TAB = d.t; render(); $('#main').scrollTop = 0; },
+            ctx(d) { S.ctx = d.c; save(); render(); },
+            auth_tab(d) { authTab = d.tab; render(); },
+            auth_switch() { AUTH = { user: null, token: null, isDemo: false }; localStorage.removeItem(AUTH_KEY); render(); },
+            toggle_pwd() { pwdVisible = !pwdVisible; render(); },
+
+            async submit_login() {
+                const email = gv('l_email').trim().toLowerCase();
+                const pwd = gv('l_pwd');
+                $('#l_err_email').textContent = '';
+                $('#l_err_pwd').textContent = '';
+
+                if (!email) { $('#l_err_email').textContent = 'Please enter your email.'; return; }
+                if (!pwd) { $('#l_err_pwd').textContent = 'Please enter your password.'; return; }
+
+                const btn = $('#btn_login');
+                if (btn) { btn.textContent = 'Logging in...'; btn.disabled = true; }
+
+                // Try server authentication first
+                try {
+                    const res = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password: pwd })
+                    });
+                    const data = await res.json();
+                    if (res.ok && data.user) {
+                        AUTH = { user: data.user, token: data.token, isDemo: false };
+                        if ($('#l_rem')?.checked) localStorage.setItem(AUTH_KEY, JSON.stringify(AUTH));
+                        loadActiveStore();
+                        render();
+                        return;
+                    } else if (!res.ok && res.status === 401) {
+                        $('#l_err_pwd').textContent = data.error || 'Invalid email or password.';
+                        if (btn) { btn.textContent = 'Log In'; btn.disabled = false; }
+                        return;
+                    }
+                } catch (e) { }
+
+                // Fallback: Local offline authentic hashing
+                const localUsers = JSON.parse(localStorage.getItem('calmsignal_local_users') || '{}');
+                const u = localUsers[email];
+                if (u) {
+                    const h = await sha256(pwd + u.salt);
+                    if (h === u.pwd_hash) {
+                        AUTH = { user: { id: u.id, name: u.name, email: u.email, age: u.age, weight: u.weight, height: u.height }, token: 'tok_local_' + uid(), isDemo: false };
+                        if ($('#l_rem')?.checked) localStorage.setItem(AUTH_KEY, JSON.stringify(AUTH));
+                        loadActiveStore();
+                        render();
+                        return;
+                    }
+                }
+                $('#l_err_pwd').textContent = 'Invalid email or password.';
+                if (btn) { btn.textContent = 'Log In'; btn.disabled = false; }
+            },
+
+            async submit_register() {
+                const name = gv('r_name').trim();
+                const email = gv('r_email').trim().toLowerCase();
+                const age = +gv('r_age');
+                const wt = +gv('r_wt').replace(',', '.');
+                const ht = +gv('r_ht').replace(',', '.');
+                const pwd = gv('r_pwd');
+                const pwd2 = gv('r_pwd2');
+
+                ['r_err_name', 'r_err_email', 'r_err_age', 'r_err_wt', 'r_err_ht', 'r_err_pwd', 'r_err_pwd2'].forEach(id => {
+                    const el = $('#' + id); if (el) el.textContent = '';
+                });
+
+                let hasErr = false;
+                if (name.length < 2) { $('#r_err_name').textContent = 'Please enter your full name (at least 2 letters).'; hasErr = true; }
+                if (!email || !email.includes('@') || !email.includes('.')) { $('#r_err_email').textContent = 'Please enter a valid email address.'; hasErr = true; }
+                if (!age || age < 5 || age > 120) { $('#r_err_age').textContent = 'Age (5-120).'; hasErr = true; }
+                if (!wt || wt < 20 || wt > 300) { $('#r_err_wt').textContent = 'Weight (20-300 kg).'; hasErr = true; }
+                if (!ht || ht < 50 || ht > 250) { $('#r_err_ht').textContent = 'Height (50-250 cm).'; hasErr = true; }
+                if (pwd.length < 6) { $('#r_err_pwd').textContent = 'Password must be at least 6 characters.'; hasErr = true; }
+                if (pwd !== pwd2) { $('#r_err_pwd2').textContent = 'Passwords do not match.'; hasErr = true; }
+                if (hasErr) return;
+
+                const btn = $('#btn_register');
+                if (btn) { btn.textContent = 'Creating account...'; btn.disabled = true; }
+
+                // Try server registration
+                try {
+                    const res = await fetch('/api/auth/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, email, age, weight: wt, height: ht, password: pwd })
+                    });
+                    const data = await res.json();
+                    if (res.ok && data.user) {
+                        AUTH = { user: data.user, token: data.token, isDemo: false };
+                        localStorage.setItem(AUTH_KEY, JSON.stringify(AUTH));
+                        loadActiveStore();
+                        render();
+                        return;
+                    } else if (!res.ok) {
+                        $('#r_err_email').textContent = data.error || 'Registration failed.';
+                        if (btn) { btn.textContent = 'Create Account & Start'; btn.disabled = false; }
+                        return;
+                    }
+                } catch (e) { }
+
+                // Fallback: Local offline registration with authentic salted hashing
+                const localUsers = JSON.parse(localStorage.getItem('calmsignal_local_users') || '{}');
+                if (localUsers[email]) {
+                    $('#r_err_email').textContent = 'An account with this email already exists.';
+                    if (btn) { btn.textContent = 'Create Account & Start'; btn.disabled = false; }
+                    return;
+                }
+                const salt = uid();
+                const pwd_hash = await sha256(pwd + salt);
+                const userId = 'usr_' + uid();
+                localUsers[email] = { id: userId, name, email, age, weight: wt, height: ht, pwd_hash, salt };
+                localStorage.setItem('calmsignal_local_users', JSON.stringify(localUsers));
+
+                AUTH = { user: { id: userId, name, email, age, weight: wt, height: ht }, token: 'tok_local_' + uid(), isDemo: false };
+                localStorage.setItem(AUTH_KEY, JSON.stringify(AUTH));
+                loadActiveStore();
+                render();
+            },
+
+            demo_mode() {
+                AUTH = { user: null, token: null, isDemo: true };
+                localStorage.setItem(AUTH_KEY, JSON.stringify(AUTH));
+                loadActiveStore();
+                render();
+            },
+
+            logout_act() {
+                if (confirm('Log out of CalmSignal?')) {
+                    if (AUTH.token && !AUTH.isDemo) {
+                        fetch('/api/auth/logout', { method: 'POST', headers: { 'Authorization': `Bearer ${AUTH.token}` } }).catch(() => { });
+                    }
+                    AUTH = { user: null, token: null, isDemo: false };
+                    localStorage.removeItem(AUTH_KEY);
+                    render();
+                }
+            },
+
+            forgot_pwd() { push({ k: 'forgot_pwd' }); },
+
+            async submit_reset_pwd() {
+                const email = gv('fp_email').trim().toLowerCase();
+                const pwd = gv('fp_pwd');
+                $('#fp_err_email').textContent = '';
+                $('#fp_err_pwd').textContent = '';
+                if (!email) { $('#fp_err_email').textContent = 'Please enter your email.'; return; }
+                if (pwd.length < 6) { $('#fp_err_pwd').textContent = 'Password must be at least 6 characters.'; return; }
+
+                try {
+                    const res = await fetch('/api/auth/forgot-password', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, new_password: pwd })
+                    });
+                    const data = await res.json();
+                    alert(data.message || 'Password update processed.');
+                    OV.pop(); ov(); render();
+                    return;
+                } catch (e) { }
+
+                // Fallback local reset
+                const localUsers = JSON.parse(localStorage.getItem('calmsignal_local_users') || '{}');
+                if (localUsers[email]) {
+                    const salt = uid();
+                    localUsers[email].salt = salt;
+                    localUsers[email].pwd_hash = await sha256(pwd + salt);
+                    localStorage.setItem('calmsignal_local_users', JSON.stringify(localUsers));
+                    alert('Password updated. You can now log in.');
+                    OV.pop(); ov(); render();
+                } else {
+                    alert('If an account exists with this email, the password has been reset.');
+                    OV.pop(); ov(); render();
+                }
+            },
+
+            pedit() { push({ k: 'pedit' }); },
+
+            async submit_pe() {
+                const name = gv('pe_name').trim();
+                const age = +gv('pe_age');
+                const wt = +gv('pe_wt').replace(',', '.');
+                const ht = +gv('pe_ht').replace(',', '.');
+
+                if (name.length < 2) { $('#pe_err_name').textContent = 'Enter a valid name.'; return; }
+                if (!age || age < 5 || age > 120) { $('#pe_err_age').textContent = 'Enter a valid age.'; return; }
+                if (!wt || wt < 20 || wt > 300) { $('#pe_err_wt').textContent = 'Enter weight (20-300).'; return; }
+                if (!ht || ht < 50 || ht > 250) { $('#pe_err_ht').textContent = 'Enter height (50-250).'; return; }
+
+                S.profile = S.profile || {};
+                S.profile.name = name;
+                S.profile.age = age;
+                S.profile.wt = wt;
+                S.profile.ht = ht;
+                if (AUTH.user) {
+                    AUTH.user.name = name;
+                    AUTH.user.age = age;
+                    AUTH.user.weight = wt;
+                    AUTH.user.height = ht;
+                    localStorage.setItem(AUTH_KEY, JSON.stringify(AUTH));
+                }
+                save();
+                OV.pop(); ov(); render();
+            },
+
+            /* Contacts Management Actions */
+            contacts_view() { push({ k: 'contacts' }); },
+            tab_contacts(d) { contactsTab = d.tab; ov(); },
+            add_contact() { push({ k: 'contact_form' }); },
+            edit_contact(d) { push({ k: 'contact_form', id: d.id }); },
+            draft_msg(d) { push({ k: 'draft_msg', id: d.id }); },
+
+            toggle_pri(d) {
+                const c = S.contacts.find(x => x.id === d.id);
+                if (c) {
+                    c.pri = c.pri ? 0 : 1;
+                    save(); ov();
+                }
+            },
+
+            del_contact(d) {
+                if (confirm('Delete this contact?')) {
+                    S.contacts = S.contacts.filter(x => x.id !== d.id);
+                    save(); ov();
+                }
+            },
+
+            save_contact(d) {
+                const name = gv('c_name').trim();
+                const ph = gv('c_ph').trim();
+                const email = gv('c_email').trim();
+                const rel = gv('c_rel');
+                const notes = gv('c_notes').trim();
+                const cat = document.querySelector('input[name="c_cat"]:checked')?.value || 'emergency';
+                const pri = $('#c_pri')?.checked ? 1 : 0;
+
+                $('#c_err_name').textContent = '';
+                $('#c_err_ph').textContent = '';
+
+                if (name.length < 2) { $('#c_err_name').textContent = 'Please enter a name.'; return; }
+                if (ph.replace(/\D/g, '').length < 7) { $('#c_err_ph').textContent = 'Please enter a valid phone number (at least 7 digits).'; return; }
+
+                const ex = d.id ? S.contacts.find(x => x.id === d.id) : null;
+                const payload = { name, rel, ph, email, cat, pri, notes };
+
+                if (ex) {
+                    Object.assign(ex, payload);
+                } else {
+                    S.contacts.push({ id: uid(), ...payload });
+                }
+
+                save();
+                OV.pop(); ov(); render();
+            },
+
+            /* Chatbot Actions */
+            chat() { push({ k: 'chat' }); },
+            cq(d) { this.sendMessage(d.q); },
+            csend() {
+                const v = gv('ci').trim();
+                if (v) this.sendMessage(v);
+            },
+
+            sendMessage(text) {
+                S.chatHistory = S.chatHistory || [];
+                S.chatHistory.push({ r: 'me', t: text, time: Date.now() });
+
+                // Generate evidence-grounded response
+                const resp = generateEvidenceResponse(text);
+                S.chatHistory.push({ r: 'bot', t: resp.t, time: Date.now(), evRef: resp.evidenceRef, isCrisis: resp.isCrisis });
+                save();
+
+                ov();
+                const input = $('#ci'); if (input) input.value = '';
+                const msgs = $('#msgs'); if (msgs) msgs.scrollTop = msgs.scrollHeight;
+            },
+
+            new_chat() {
+                if (confirm('Start a fresh conversation?')) {
+                    S.chatHistory = [];
+                    save(); ov();
+                }
+            },
+
+            clear_chat() {
+                if (confirm('Clear all conversation history?')) {
+                    S.chatHistory = [];
+                    save(); render();
+                }
+            },
+
+            view_evidence(d) {
+                push({ k: 'evidence', id: d.id });
+            },
+
+            /* Sensor & Replay Actions */
+            sensor_modal() { push({ k: 'sensor_modal' }); },
+            connect_ble() { P.connectBLE(); },
+            connect_serial() { P.connectSerial(); },
+            connect_sse() { P.connectSSE(); },
+            pick_subj(d) { P.setWESADReplay(d.s, P.wesadScn); ov(); },
+            pick_scn(d) { P.setWESADReplay(P.wesadSubj, d.scn); ov(); },
+
+            /* Support Actions */
+            supp() { SUP.open('choose'); },
+            sb() { SUP.open('breath'); },
+            sg() {
+                this.sendMessage("Help me ground myself with 5-4-3-2-1");
+                OV.length = 0; push({ k: 'chat' });
+            },
+            pause() { SUP.pause(); },
+            sfin() { SUP.finish(); },
+            sclose() { SUP.close(); },
+            rate(d) { SUP.rate(d.f); },
+
+            /* Settings Toggles */
+            tog_set(d, b) {
+                S.set[d.k] = b.checked;
+                save();
+            },
+
+            export_data() {
+                const dump = {
+                    export_date: new Date().toISOString(),
+                    user: AUTH.user || { name: 'Demo User' },
+                    profile: S.profile,
+                    contacts: S.contacts,
+                    journal: S.journal,
+                    events: S.events,
+                    sessions: S.sessions,
+                    baseline: S.base
+                };
+                const blob = new Blob([JSON.stringify(dump, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = `calmsignal_export_${Date.now()}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+            },
+
+            rbase() {
+                if (confirm('Reset your personalized baseline? 7-day learning will restart.')) {
+                    S.base = DEF_STORE().base;
+                    save(); render();
+                }
+            },
+
+            /* Journal Actions */
+            jnew() { push({ k: 'jform' }); },
+            jt(d, b) {
+                document.querySelectorAll('#tr .chip').forEach(c => c.classList.remove('on'));
+                b.classList.add('on');
+            },
+            jsave() {
+                const t = document.querySelector('#tr .chip.on')?.textContent;
+                if (!t) { $('#je').textContent = 'Please choose a trigger.'; return; }
+                const f = { trig: t, text: gv('jx').trim() };
+                S.journal.push({ id: uid(), t: Date.now(), ...f, hr: E.r.hr, sc: Math.round(E.sc) });
+                save(); OV.pop(); ov(); render();
+            },
+            jdel(d) {
+                if (confirm('Delete this journal entry?')) {
+                    S.journal = S.journal.filter(x => x.id !== d.id);
+                    save(); render();
+                }
+            },
+
+            back() {
+                if (SUP.run && OV[OV.length - 1]?.k === 'support') { SUP.close(); return; }
+                OV.pop(); ov(); render();
+            }
+        };
+
+        document.addEventListener('click', e => {
+            const b = e.target.closest('[data-a]');
+            if (b && A[b.dataset.a]) A[b.dataset.a](b.dataset, b);
+        });
+
+        // Initial boot
+        render();
+    </script>
+</body>
+
+</html>
